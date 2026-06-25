@@ -15,7 +15,7 @@ export default function PublicLayout({
     <>
       <Navbar />
 
-       <main className="pt-28 min-h-screen">
+       <main>
         {children}
       </main>
       <Footer />

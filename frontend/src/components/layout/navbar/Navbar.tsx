@@ -7,7 +7,7 @@ import CTAButton from "./CTAButton";
 
 export default function Navbar() {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 px-4 pt-4">
+    <header className="fixed inset-x-0 top-6 z-50 px-4">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between rounded-2xl border border-white/30 bg-white/80 px-6 backdrop-blur-xl shadow-lg shadow-black/5">
 
         <Logo />
