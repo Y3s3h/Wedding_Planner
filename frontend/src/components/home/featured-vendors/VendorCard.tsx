@@ -9,7 +9,7 @@ interface VendorCardProps {
     city: string;
     rating: number;
     reviews: number;
-    price: string;
+    price: number;
     image: string;
     featured: boolean;
   };

@@ -6,7 +6,7 @@ interface VendorInfoProps {
   name: string;
   category: string;
   city: string;
-  price: string;
+  price: number;
 }
 
 export default function VendorInfo({
