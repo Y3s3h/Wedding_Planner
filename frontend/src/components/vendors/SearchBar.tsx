@@ -1,0 +1,215 @@
+// "use client";
+
+// import { Search, MapPin, SlidersHorizontal } from "lucide-react";
+
+// export default function SearchBar() {
+
+//   const { search, setSearch } = useVendorStore();
+//   return (
+//     <div className="sticky top-24 z-30 mb-10 rounded-3xl border border-gray-200 bg-white/90 p-5 shadow-lg backdrop-blur-xl">
+
+//       <div className="flex flex-col gap-4 lg:flex-row">
+
+//         {/* Search */}
+
+//         <div className="relative flex-1">
+
+//           <Search
+//             size={20}
+//             className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"
+//           />
+
+//           <input
+//             type="text"
+//             placeholder="Search vendors, venues, photographers..."
+//             className="
+//             h-14
+//             w-full
+//             rounded-2xl
+//             border
+//             border-gray-200
+//             text-gray-700
+//             bg-gray-50
+//             pl-14
+//             pr-4
+//             outline-none
+//             transition
+//             focus:border-rose-500
+//             focus:bg-white
+//             "
+//           />
+
+//         </div>
+
+//         {/* City */}
+
+//         <div className="relative w-full lg:w-64">
+
+//           <MapPin
+//             size={20}
+//             className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"
+//           />
+
+//           <select
+//             className="
+//             h-14
+//             w-full
+//             rounded-2xl
+//             border
+//             border-gray-200
+//             text-gray-700
+//             bg-gray-50
+//             pl-14
+//             pr-4
+//             outline-none
+//             transition
+//             focus:border-rose-500
+//             "
+//           >
+//             <option>All Cities</option>
+//             <option>Delhi</option>
+//             <option>Jaipur</option>
+//             <option>Mumbai</option>
+//             <option>Goa</option>
+//             <option>Udaipur</option>
+//           </select>
+
+//         </div>
+
+//         {/* Mobile Filter */}
+
+//         <button
+//           className="
+//           flex
+//           h-14
+//           items-center
+//           justify-center
+//           gap-2
+//           rounded-2xl
+//           border
+//           border-gray-200
+//           px-6
+//           transition
+//           hover:bg-rose-500
+//           hover:text-white
+//           lg:hidden
+//           "
+//         >
+//           <SlidersHorizontal size={18} />
+
+//           Filters
+
+//         </button>
+
+//       </div>
+
+//     </div>
+//   );
+// }
+
+"use client";
+
+import { Search, MapPin, SlidersHorizontal } from "lucide-react";
+import { useVendorStore } from "@/store/vendorStore";
+
+export default function SearchBar() {
+const {
+  search,
+  setSearch,
+  city,
+  setCity,
+} = useVendorStore();
+
+  return (
+    <div className="sticky top-24 z-30 mb-10 rounded-3xl border border-gray-200 bg-white/90 p-5 shadow-lg backdrop-blur-xl">
+      <div className="flex flex-col gap-4 lg:flex-row">
+        {/* Search */}
+        <div className="relative flex-1">
+          <Search
+            size={20}
+            className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"
+          />
+
+          <input
+            type="text"
+            placeholder="Search vendors, venues, photographers..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="
+              h-14
+              w-full
+              rounded-2xl
+              border
+              border-gray-200
+              bg-gray-50
+              pl-14
+              pr-4
+              text-gray-700
+              outline-none
+              transition
+              focus:border-rose-500
+              focus:bg-white
+            "
+          />
+        </div>
+
+        {/* City */}
+        <div className="relative w-full lg:w-64">
+          <MapPin
+            size={20}
+            className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"
+          />
+
+          <select
+           value={city}
+  onChange={(e) => setCity(e.target.value)}
+            className="
+              h-14
+              w-full
+              rounded-2xl
+              border
+              border-gray-200
+              bg-gray-50
+              pl-14
+              pr-4
+              text-gray-700
+              outline-none
+              transition
+              focus:border-rose-500
+            "
+          >
+            <option value="">All Cities</option>
+  <option value="Delhi">Delhi</option>
+  <option value="Jaipur">Jaipur</option>
+  <option value="Mumbai">Mumbai</option>
+  <option value="Goa">Goa</option>
+  <option value="Udaipur">Udaipur</option>
+          </select>
+        </div>
+
+        {/* Mobile Filter */}
+        <button
+          className="
+            flex
+            h-14
+            items-center
+            justify-center
+            gap-2
+            rounded-2xl
+            text-gray-700
+            border
+            border-gray-200
+            px-6
+            transition
+            hover:bg-rose-500
+            hover:text-white
+            lg:hidden
+          "
+        >
+          <SlidersHorizontal size={18} />
+          Filters
+        </button>
+      </div>
+    </div>
+  );
+}

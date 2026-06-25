@@ -152,6 +152,25 @@ body {
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* Chrome, Edge, Safari */
+.hide-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.hide-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(244, 63, 94, 0.35);
+  border-radius: 9999px;
+}
+
+.hide-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Firefox */
+.hide-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(244, 63, 94, 0.35) transparent;
+}
 @layer base {
   * {
     @apply border-border outline-ring/50;
