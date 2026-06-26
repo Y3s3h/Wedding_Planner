@@ -5,6 +5,10 @@ import StatsSection from "@/components/home/stats/StatsSection";
 import WhyChooseUs from "@/components/home/why-choose-us/WhyChooseUs";
 import HowItWorks from "@/components/home/how-it-works/HowItWorks";
 import GallerySection from "@/components/home/gallery/GallerySection";
+import TestimonialsSection from "@/components/home/testimonials/TestimonialsSection";
+import DownloadApp from "@/components/home/download-app/DownloadApp";
+import FinalCTA from "@/components/home/final-cta/FinalCTA";
+
 
 export default function HomePage() {
   return (
@@ -16,6 +20,12 @@ export default function HomePage() {
        <WhyChooseUs/>
        <HowItWorks />
        <GallerySection />
+
+       <TestimonialsSection />
+
+       <DownloadApp />
+    <FinalCTA/>
+
 
     </>
   );

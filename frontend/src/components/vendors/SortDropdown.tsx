@@ -24,6 +24,7 @@ export default function SortDropdown() {
             border
             border-gray-200
             bg-white
+            text-gray-700
             pl-10
             pr-10
             text-sm
