@@ -1,3 +1,6 @@
+
+
+
 // export const vendors = [
 //   {
 //     id: 1,
@@ -6,7 +9,7 @@
 //     city: "Jaipur",
 //     rating: 4.9,
 //     reviews: 250,
-//     price: "₹2,50,000",
+//     price: 250000,
 //     image: "/vendors/vendor2.jpg",
 //     featured: true,
 //   },
@@ -17,7 +20,7 @@
 //     city: "Delhi",
 //     rating: 4.8,
 //     reviews: 180,
-//     price: "₹75,000",
+//     price: 75000,
 //     image: "/vendors/vendor3.jpg",
 //     featured: true,
 //   },
@@ -28,7 +31,7 @@
 //     city: "Mumbai",
 //     rating: 4.7,
 //     reviews: 145,
-//     price: "₹1,20,000",
+//     price: 120000,
 //     image: "/vendors/vendor4.jpg",
 //     featured: false,
 //   },
@@ -39,7 +42,7 @@
 //     city: "Bengaluru",
 //     rating: 4.9,
 //     reviews: 320,
-//     price: "₹1,80,000",
+//     price: 180000,
 //     image: "/vendors/vendor5.jpg",
 //     featured: true,
 //   },
@@ -50,7 +53,7 @@
 //     city: "Hyderabad",
 //     rating: 4.8,
 //     reviews: 210,
-//     price: "₹45,000",
+//     price: 45000,
 //     image: "/vendors/vendor6.jpg",
 //     featured: false,
 //   },
@@ -61,7 +64,7 @@
 //     city: "Pune",
 //     rating: 4.6,
 //     reviews: 130,
-//     price: "₹60,000",
+//     price: 60000,
 //     image: "/vendors/vendor1.jpg",
 //     featured: false,
 //   },
@@ -72,7 +75,7 @@
 //     city: "Chandigarh",
 //     rating: 4.7,
 //     reviews: 95,
-//     price: "₹35,000",
+//     price: 35000,
 //     image: "/vendors/vendor2.jpg",
 //     featured: true,
 //   },
@@ -83,7 +86,7 @@
 //     city: "Kolkata",
 //     rating: 4.8,
 //     reviews: 170,
-//     price: "₹55,000",
+//     price: 55000,
 //     image: "/vendors/vendor3.jpg",
 //     featured: false,
 //   },
@@ -94,12 +97,11 @@
 //     city: "Goa",
 //     rating: 5.0,
 //     reviews: 280,
-//     price: "₹3,00,000",
+//     price: 300000,
 //     image: "/vendors/vendor4.jpg",
 //     featured: true,
 //   },
 // ];
-
 
 export const vendors = [
   {
@@ -111,8 +113,32 @@ export const vendors = [
     reviews: 250,
     price: 250000,
     image: "/vendors/vendor2.jpg",
+    images: [
+      "/vendors/vendor2.jpg",
+      "/vendors/vendor1.jpg",
+      "/vendors/vendor3.jpg",
+      "/vendors/vendor4.jpg",
+      "/vendors/vendor5.jpg",
+    ],
     featured: true,
+    description:
+      "Royal Palace Jaipur is one of Rajasthan's most luxurious wedding venues, offering breathtaking architecture, royal hospitality, and world-class event management for unforgettable celebrations.",
+    amenities: [
+      "Parking",
+      "Luxury Rooms",
+      "AC Banquet",
+      "Outdoor Lawn",
+      "Catering",
+      "Decoration",
+      "Wi-Fi",
+    ],
+    packages: [
+      { id: 1, name: "Silver Package", price: 250000 },
+      { id: 2, name: "Gold Package", price: 400000 },
+      { id: 3, name: "Royal Package", price: 650000 },
+    ],
   },
+
   {
     id: 2,
     name: "Bliss Photography",
@@ -122,8 +148,30 @@ export const vendors = [
     reviews: 180,
     price: 75000,
     image: "/vendors/vendor3.jpg",
+    images: [
+      "/vendors/vendor3.jpg",
+      "/vendors/vendor1.jpg",
+      "/vendors/vendor2.jpg",
+      "/vendors/vendor4.jpg",
+      "/vendors/vendor5.jpg",
+    ],
     featured: true,
+    description:
+      "Bliss Photography captures timeless wedding moments with cinematic storytelling, candid photography, and premium wedding albums.",
+    amenities: [
+      "Candid Photography",
+      "Cinematography",
+      "Drone Shoot",
+      "Pre-Wedding",
+      "Album Design",
+    ],
+    packages: [
+      { id: 1, name: "Basic Shoot", price: 75000 },
+      { id: 2, name: "Premium Wedding", price: 120000 },
+      { id: 3, name: "Luxury Wedding", price: 180000 },
+    ],
   },
+
   {
     id: 3,
     name: "Dream Decor Studio",
@@ -133,8 +181,30 @@ export const vendors = [
     reviews: 145,
     price: 120000,
     image: "/vendors/vendor4.jpg",
+    images: [
+      "/vendors/vendor4.jpg",
+      "/vendors/vendor2.jpg",
+      "/vendors/vendor3.jpg",
+      "/vendors/vendor1.jpg",
+      "/vendors/vendor5.jpg",
+    ],
     featured: false,
+    description:
+      "Dream Decor Studio creates elegant wedding decorations with floral arrangements, themed stages, and luxury event styling.",
+    amenities: [
+      "Stage Decor",
+      "Floral Decor",
+      "Lighting",
+      "Theme Design",
+      "Entry Decor",
+    ],
+    packages: [
+      { id: 1, name: "Classic Decor", price: 120000 },
+      { id: 2, name: "Premium Decor", price: 220000 },
+      { id: 3, name: "Luxury Decor", price: 350000 },
+    ],
   },
+
   {
     id: 4,
     name: "Flavors Catering",
@@ -144,8 +214,31 @@ export const vendors = [
     reviews: 320,
     price: 180000,
     image: "/vendors/vendor5.jpg",
+    images: [
+      "/vendors/vendor5.jpg",
+      "/vendors/vendor2.jpg",
+      "/vendors/vendor3.jpg",
+      "/vendors/vendor4.jpg",
+      "/vendors/vendor1.jpg",
+    ],
     featured: true,
+    description:
+      "Flavors Catering specializes in multi-cuisine wedding catering with customized menus, live counters, and premium hospitality.",
+    amenities: [
+      "North Indian",
+      "South Indian",
+      "Chinese",
+      "Live Counters",
+      "Desserts",
+      "Beverages",
+    ],
+    packages: [
+      { id: 1, name: "Veg Menu", price: 180000 },
+      { id: 2, name: "Premium Buffet", price: 300000 },
+      { id: 3, name: "Luxury Catering", price: 450000 },
+    ],
   },
+
   {
     id: 5,
     name: "Elite Makeup Studio",
@@ -155,8 +248,30 @@ export const vendors = [
     reviews: 210,
     price: 45000,
     image: "/vendors/vendor6.jpg",
+    images: [
+      "/vendors/vendor6.jpg",
+      "/vendors/vendor2.jpg",
+      "/vendors/vendor3.jpg",
+      "/vendors/vendor4.jpg",
+      "/vendors/vendor5.jpg",
+    ],
     featured: false,
+    description:
+      "Elite Makeup Studio offers bridal makeup, hairstyling, and grooming services using premium international beauty brands.",
+    amenities: [
+      "HD Makeup",
+      "Airbrush Makeup",
+      "Hair Styling",
+      "Draping",
+      "Trial Session",
+    ],
+    packages: [
+      { id: 1, name: "Bridal Makeup", price: 45000 },
+      { id: 2, name: "Bridal Premium", price: 70000 },
+      { id: 3, name: "Celebrity Bridal", price: 100000 },
+    ],
   },
+
   {
     id: 6,
     name: "Melody Beats",
@@ -166,8 +281,30 @@ export const vendors = [
     reviews: 130,
     price: 60000,
     image: "/vendors/vendor1.jpg",
+    images: [
+      "/vendors/vendor1.jpg",
+      "/vendors/vendor2.jpg",
+      "/vendors/vendor3.jpg",
+      "/vendors/vendor4.jpg",
+      "/vendors/vendor5.jpg",
+    ],
     featured: false,
+    description:
+      "Melody Beats delivers energetic DJ performances with live music, professional sound systems, and dance floor lighting.",
+    amenities: [
+      "DJ",
+      "Live Band",
+      "Sound System",
+      "LED Lighting",
+      "Dance Floor",
+    ],
+    packages: [
+      { id: 1, name: "DJ Basic", price: 60000 },
+      { id: 2, name: "DJ Premium", price: 95000 },
+      { id: 3, name: "DJ + Live Band", price: 150000 },
+    ],
   },
+
   {
     id: 7,
     name: "Luxury Wheels",
@@ -177,8 +314,30 @@ export const vendors = [
     reviews: 95,
     price: 35000,
     image: "/vendors/vendor2.jpg",
+    images: [
+      "/vendors/vendor2.jpg",
+      "/vendors/vendor3.jpg",
+      "/vendors/vendor4.jpg",
+      "/vendors/vendor5.jpg",
+      "/vendors/vendor1.jpg",
+    ],
     featured: true,
+    description:
+      "Luxury Wheels provides premium wedding cars including vintage, luxury sedans, and decorated bridal vehicles.",
+    amenities: [
+      "Luxury Cars",
+      "Vintage Cars",
+      "Decorated Vehicles",
+      "Professional Chauffeur",
+      "Airport Pickup",
+    ],
+    packages: [
+      { id: 1, name: "Luxury Sedan", price: 35000 },
+      { id: 2, name: "Premium Fleet", price: 60000 },
+      { id: 3, name: "Royal Entry", price: 90000 },
+    ],
   },
+
   {
     id: 8,
     name: "Bloom Florists",
@@ -188,8 +347,30 @@ export const vendors = [
     reviews: 170,
     price: 55000,
     image: "/vendors/vendor3.jpg",
+    images: [
+      "/vendors/vendor3.jpg",
+      "/vendors/vendor2.jpg",
+      "/vendors/vendor4.jpg",
+      "/vendors/vendor5.jpg",
+      "/vendors/vendor1.jpg",
+    ],
     featured: false,
+    description:
+      "Bloom Florists designs stunning floral decorations with fresh flowers, centerpieces, bouquets, and wedding stage arrangements.",
+    amenities: [
+      "Fresh Flowers",
+      "Bouquets",
+      "Centerpieces",
+      "Mandap Decor",
+      "Stage Decoration",
+    ],
+    packages: [
+      { id: 1, name: "Classic Floral", price: 55000 },
+      { id: 2, name: "Premium Floral", price: 90000 },
+      { id: 3, name: "Luxury Floral", price: 150000 },
+    ],
   },
+
   {
     id: 9,
     name: "Golden Moments Events",
@@ -199,6 +380,28 @@ export const vendors = [
     reviews: 280,
     price: 300000,
     image: "/vendors/vendor4.jpg",
+    images: [
+      "/vendors/vendor4.jpg",
+      "/vendors/vendor2.jpg",
+      "/vendors/vendor3.jpg",
+      "/vendors/vendor5.jpg",
+      "/vendors/vendor1.jpg",
+    ],
     featured: true,
+    description:
+      "Golden Moments Events is a full-service wedding planning company specializing in destination weddings, luxury events, and personalized celebrations.",
+    amenities: [
+      "Destination Weddings",
+      "Guest Management",
+      "Vendor Coordination",
+      "Decoration",
+      "Entertainment",
+      "Budget Planning",
+    ],
+    packages: [
+      { id: 1, name: "Essential Planning", price: 300000 },
+      { id: 2, name: "Premium Planning", price: 500000 },
+      { id: 3, name: "Luxury Destination", price: 850000 },
+    ],
   },
 ];
