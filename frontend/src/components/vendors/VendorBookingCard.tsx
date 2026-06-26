@@ -145,6 +145,7 @@
 import { useState } from "react";
 import { Calendar, MessageCircle, Users } from "lucide-react";
 import BookingModal from "./BookingModal";
+import { useAuthStore } from "@/store/authStore";
 
 interface Package {
   id: number;
@@ -163,6 +164,10 @@ export default function VendorBookingCard({
   const [date, setDate] = useState("");
   const [guests, setGuests] = useState(200);
   const [open, setOpen] = useState(false);
+  const {
+  isAuthenticated,
+  openLogin,
+} = useAuthStore();
 
   return (
     <>
@@ -317,7 +322,13 @@ export default function VendorBookingCard({
 
       {/* Buttons */}
 
-      <button  onClick={() => setOpen(true)}
+      <button  onClick={() => {
+  if (isAuthenticated) {
+    setOpen(true);
+  } else {
+    openLogin();
+  }
+}}
         className="
           mt-8
           flex
