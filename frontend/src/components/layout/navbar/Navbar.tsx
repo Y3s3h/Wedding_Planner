@@ -1,25 +1,64 @@
+
+
 // "use client";
 
+// import { useEffect, useState } from "react";
 // import Logo from "./Logo";
 // import DesktopNavigation from "./DesktopNavigation";
 // import MobileNavigation from "./MobileNavigation";
 // import CTAButton from "./CTAButton";
+// import { useAuthStore } from "@/store/authStore";
 
 // export default function Navbar() {
-//   return (
-//     <header className="fixed inset-x-0 top-6 z-50 px-4">
-//       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between rounded-2xl border border-white/30 bg-white/80 px-6 backdrop-blur-xl shadow-lg shadow-black/5">
+//   const [scrolled, setScrolled] = useState(false);
+//   const { openLogin } = useAuthStore();
 
+//   const {
+//   isAuthenticated,
+//   user,
+//   openLogin,
+//   logout,
+// } = useAuthStore();
+
+//   useEffect(() => {
+//     const handleScroll = () => {
+//       setScrolled(window.scrollY > 40);
+//     };
+
+//     window.addEventListener("scroll", handleScroll);
+
+//     return () =>
+//       window.removeEventListener("scroll", handleScroll);
+//   }, []);
+
+//   return (
+//     <header
+//       className={`fixed inset-x-0 top-5 z-50 px-5 transition-all duration-500 ${
+//         scrolled
+//           ? "top-3"
+//           : "top-5"
+//       }`}
+//     >
+//       <div
+//         className={`mx-auto flex h-20 max-w-7xl items-center justify-between rounded-3xl border transition-all duration-500 ${
+//           scrolled
+//     ? "bg-black/20 backdrop-blur-xl border-white/20"
+//     : "bg-black/20 backdrop-blur-xl border-white/10"
+//         } px-8`}
+//       >
 //         <Logo />
 
 //         <div className="hidden lg:flex">
 //           <DesktopNavigation />
 //         </div>
 
-//         <div className="hidden lg:flex items-center gap-4">
-//           <button className="text-sm font-medium text-gray-700 hover:text-rose-600 transition">
-//             Login
-//           </button>
+//         <div className="hidden lg:flex items-center gap-5">
+//           <button
+//   onClick={openLogin}
+//   className="rounded-full bg-rose-500 px-6 py-2 font-semibold text-white transition hover:bg-rose-600"
+// >
+//   Login
+// </button>
 
 //           <CTAButton />
 //         </div>
@@ -27,7 +66,6 @@
 //         <div className="lg:hidden">
 //           <MobileNavigation />
 //         </div>
-
 //       </div>
 //     </header>
 //   );
@@ -41,9 +79,17 @@ import Logo from "./Logo";
 import DesktopNavigation from "./DesktopNavigation";
 import MobileNavigation from "./MobileNavigation";
 import CTAButton from "./CTAButton";
+import { useAuthStore } from "@/store/authStore";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+
+  const {
+    isAuthenticated,
+    user,
+    openLogin,
+    logout,
+  } = useAuthStore();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -59,17 +105,15 @@ export default function Navbar() {
   return (
     <header
       className={`fixed inset-x-0 top-5 z-50 px-5 transition-all duration-500 ${
-        scrolled
-          ? "top-3"
-          : "top-5"
+        scrolled ? "top-3" : "top-5"
       }`}
     >
       <div
-        className={`mx-auto flex h-20 max-w-7xl items-center justify-between rounded-3xl border transition-all duration-500 ${
+        className={`mx-auto flex h-20 max-w-7xl items-center justify-between rounded-3xl border px-8 transition-all duration-500 ${
           scrolled
-    ? "bg-black/20 backdrop-blur-xl border-white/20"
-    : "bg-black/20 backdrop-blur-xl border-white/10"
-        } px-8`}
+            ? "border-white/20 bg-black/20 backdrop-blur-xl"
+            : "border-white/10 bg-black/20 backdrop-blur-xl"
+        }`}
       >
         <Logo />
 
@@ -77,10 +121,34 @@ export default function Navbar() {
           <DesktopNavigation />
         </div>
 
-        <div className="hidden lg:flex items-center gap-5">
-          <button className="text-white hover:text-rose-300 transition">
-            Login
-          </button>
+        <div className="hidden items-center gap-5 lg:flex">
+          {isAuthenticated ? (
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-rose-500 font-bold text-white">
+                {user?.name?.charAt(0).toUpperCase()}
+              </div>
+
+              <div>
+                <p className="font-semibold text-white">
+                  {user?.name}
+                </p>
+
+                <button
+                  onClick={logout}
+                  className="text-sm text-gray-300 transition hover:text-rose-400"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={openLogin}
+              className="rounded-full bg-rose-500 px-6 py-2 font-semibold text-white transition hover:bg-rose-600"
+            >
+              Login
+            </button>
+          )}
 
           <CTAButton />
         </div>

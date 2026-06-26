@@ -1,0 +1,395 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  User,
+  Mail,
+  Phone,
+  Lock,
+  Eye,
+  EyeOff,
+  X,
+} from "lucide-react";
+
+import { useAuthStore } from "@/store/authStore";
+
+export default function RegisterModal() {
+  const {
+    isRegisterOpen,
+    closeRegister,
+    openLogin,
+  } = useAuthStore();
+
+  const [loading, setLoading] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState(false);
+
+  const [agree, setAgree] = useState(false);
+
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        closeRegister();
+      }
+    };
+
+    window.addEventListener("keydown", handleEsc);
+
+    return () =>
+      window.removeEventListener("keydown", handleEsc);
+  }, [closeRegister]);
+
+  const handleRegister = () => {
+    setLoading(true);
+
+    setTimeout(() => {
+      setLoading(false);
+      closeRegister();
+      openLogin();
+    }, 2000);
+  };
+
+  return (
+    <AnimatePresence>
+      {isRegisterOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={closeRegister}
+          className="fixed inset-0 z-[300] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+        >
+          <motion.div
+            onClick={(e) => e.stopPropagation()}
+            initial={{
+              opacity: 0,
+              scale: 0.95,
+              y: 40,
+            }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              y: 0,
+            }}
+            exit={{
+              opacity: 0,
+              scale: 0.95,
+              y: 40,
+            }}
+            transition={{
+              duration: 0.35,
+            }}
+            className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white shadow-2xl"
+          >
+            <div className="flex items-center justify-between border-b px-7 py-6">
+              <div>
+                <h2 className="text-3xl font-bold text-gray-900">
+                  Create Account
+                </h2>
+
+                <p className="mt-2 text-gray-500">
+                  Join thousands of happy couples.
+                </p>
+              </div>
+
+              <button
+                onClick={closeRegister}
+                className="rounded-full p-2 hover:bg-gray-100"
+              >
+                <X size={22} />
+              </button>
+            </div>
+
+            <div className="space-y-4 p-6">
+
+              {/* Full Name */}
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+  {/* Full Name */}
+  <div>
+    <label className="mb-2 block text-sm font-medium text-gray-700">
+      Full Name
+    </label>
+
+    <div className="relative">
+      <User
+        size={18}
+        className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+      />
+
+      <input
+        value={form.name}
+        onChange={(e) =>
+          setForm({
+            ...form,
+            name: e.target.value,
+          })
+        }
+        placeholder="Full Name"
+        className="h-11 w-full rounded-xl border border-gray-300 pl-11 pr-4 text-gray-700 outline-none transition focus:border-rose-500"
+      />
+    </div>
+  </div>
+
+  {/* Email */}
+  <div>
+    <label className="mb-2 block text-sm font-medium text-gray-700">
+      Email
+    </label>
+
+    <div className="relative">
+      <Mail
+        size={18}
+        className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+      />
+
+      <input
+        type="email"
+        value={form.email}
+        onChange={(e) =>
+          setForm({
+            ...form,
+            email: e.target.value,
+          })
+        }
+        placeholder="Email"
+        className="h-11 w-full rounded-xl border border-gray-300 pl-11 pr-4 text-gray-700 outline-none transition focus:border-rose-500"
+      />
+    </div>
+  </div>
+
+  {/* Phone */}
+  <div>
+    <label className="mb-2 block text-sm font-medium text-gray-700">
+      Phone
+    </label>
+
+    <div className="relative">
+      <Phone
+        size={18}
+        className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+      />
+
+      <input
+        value={form.phone}
+        onChange={(e) =>
+          setForm({
+            ...form,
+            phone: e.target.value,
+          })
+        }
+        placeholder="Phone"
+        className="h-11 w-full rounded-xl border border-gray-300 pl-11 pr-4 text-gray-700 outline-none transition focus:border-rose-500"
+      />
+    </div>
+  </div>
+
+  {/* Password */}
+  <div>
+    <label className="mb-2 block text-sm font-medium text-gray-700">
+      Password
+    </label>
+
+    <div className="relative">
+      <Lock
+        size={18}
+        className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+      />
+
+      <input
+        type={showPassword ? "text" : "password"}
+        value={form.password}
+        onChange={(e) =>
+          setForm({
+            ...form,
+            password: e.target.value,
+          })
+        }
+        placeholder="Create Password"
+        className="h-11 w-full rounded-xl border border-gray-300 pl-11 pr-11 text-gray-700 outline-none transition focus:border-rose-500"
+      />
+
+      <button
+        type="button"
+        onClick={() => setShowPassword(!showPassword)}
+        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+      >
+        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+      </button>
+    </div>
+  </div>
+</div>
+
+              
+
+              
+
+               
+              {/* Confirm Password */}
+              <div>
+                <label className="mb-2 block font-medium text-gray-700">
+                  Confirm Password
+                </label>
+
+                <div className="relative">
+                  <Lock
+                    size={20}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                  />
+
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={form.confirmPassword}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        confirmPassword: e.target.value,
+                      })
+                    }
+                    placeholder="Confirm Password"
+                    className="h-12 w-full rounded-xl border border-gray-300 pl-12 pr-12 text-gray-700 outline-none focus:border-rose-500"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setShowConfirmPassword(!showConfirmPassword)
+                    }
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff size={20} />
+                    ) : (
+                      <Eye size={20} />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Password Strength */}
+              <div>
+                <div className="mb-2 flex justify-between text-sm">
+                  <span className="text-gray-600">
+                    Password Strength
+                  </span>
+
+                  <span
+                    className={`font-semibold ${
+                      form.password.length >= 8
+                        ? "text-green-600"
+                        : form.password.length >= 5
+                        ? "text-yellow-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {form.password.length >= 8
+                      ? "Strong"
+                      : form.password.length >= 5
+                      ? "Medium"
+                      : "Weak"}
+                  </span>
+                </div>
+
+                <div className="h-2 rounded-full bg-gray-200">
+                  <div
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      form.password.length >= 8
+                        ? "w-full bg-green-500"
+                        : form.password.length >= 5
+                        ? "w-2/3 bg-yellow-500"
+                        : "w-1/3 bg-red-500"
+                    }`}
+                  />
+                </div>
+              </div>
+
+              {/* Terms & Conditions */}
+              <label className="flex cursor-pointer items-start gap-3">
+                <input
+                  type="checkbox"
+                  checked={agree}
+                  onChange={(e) => setAgree(e.target.checked)}
+                  className="mt-1 accent-rose-500"
+                />
+
+                <span className="text-sm text-gray-600">
+                  I agree to the{" "}
+                  <button
+                    type="button"
+                    className="font-semibold text-rose-500 hover:underline"
+                  >
+                    Terms & Conditions
+                  </button>
+                </span>
+              </label>
+
+                            {/* Create Account Button */}
+              <button
+                type="button"
+                disabled={!agree || loading}
+                onClick={handleRegister}
+                className="
+                  flex
+                  h-12
+                  w-full
+                  items-center
+                  justify-center
+                  rounded-xl
+                  bg-gradient-to-r
+                  from-rose-500
+                  to-pink-500
+                  font-semibold
+                  text-white
+                  shadow-lg
+                  transition-all
+                  duration-300
+                  hover:scale-[1.01]
+                  hover:shadow-xl
+                  disabled:cursor-not-allowed
+                  disabled:opacity-60
+                "
+              >
+                {loading ? (
+                  <div className="flex items-center gap-3">
+                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    Creating Account...
+                  </div>
+                ) : (
+                  "Create Account"
+                )}
+              </button>
+
+              {/* Already Have an Account */}
+              <div className="text-center text-sm text-gray-600">
+                Already have an account?
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    closeRegister();
+                    openLogin();
+                  }}
+                  className="ml-2 font-semibold text-rose-500 transition hover:text-rose-600"
+                >
+                  Login
+                </button>
+              </div>
+
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
