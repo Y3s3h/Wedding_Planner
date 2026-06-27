@@ -7,7 +7,7 @@ export default function AboutStats() {
 
       {/* Background */}
 
-      <div className="absolute inset-0 bg-gradient-to-br from-[#14090B] via-[#2A0F18] to-[#14090B]" />
+      {/* <div className="absolute inset-0 bg-gradient-to-br from-[#14090B] via-[#2A0F18] to-[#14090B]" /> */}
 
       {/* Glow */}
 

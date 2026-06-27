@@ -28,7 +28,7 @@ export default function AboutCTA() {
 
         {/* Rose Gradient */}
 
-        <div className="absolute inset-0 bg-gradient-to-r from-[#5a122e]/80 via-[#9d1d52]/40 to-[#5a122e]/80" />
+        {/* <div className="absolute inset-0 bg-gradient-to-r from-[#5a122e]/80 via-[#9d1d52]/40 to-[#5a122e]/80" /> */}
 
       </div>
 
