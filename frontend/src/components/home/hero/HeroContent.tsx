@@ -26,12 +26,7 @@ export default function HeroContent() {
 
       <div className="mt-10 flex flex-col gap-4 sm:flex-row">
 
-        {/* <Link
-          href="/vendors"
-          className="rounded-full bg-rose-600 px-8 py-4 text-lg font-semibold transition-all duration-300 hover:bg-rose-700 hover:scale-105"
-        >
-          Explore Vendors
-        </Link> */}
+       
 
         <Link
   href="/vendors"

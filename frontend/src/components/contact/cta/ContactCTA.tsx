@@ -24,7 +24,7 @@ export default function ContactCTA() {
         <div className="absolute inset-0 bg-black/75" />
 
         {/* Luxury Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#531126]/80 via-[#8d1c48]/40 to-[#531126]/80" />
+        {/* <div className="absolute inset-0 bg-gradient-to-r from-[#531126]/80 via-[#8d1c48]/40 to-[#531126]/80" /> */}
       </div>
 
       {/* Glow */}

@@ -196,7 +196,7 @@ export default function ServicesHero() {
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
-          src="/images/services-hero.jpg"
+          src="/images/services-hero1.jpg"
           alt="Wedding Services"
           fill
           priority

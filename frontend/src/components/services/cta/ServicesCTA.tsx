@@ -24,7 +24,7 @@ export default function ServicesCTA() {
 
         <div className="absolute inset-0 bg-black/70" />
 
-        <div className="absolute inset-0 bg-gradient-to-r from-[#5f132f]/80 via-[#a11755]/40 to-[#5f132f]/80" />
+        {/* <div className="absolute inset-0 bg-gradient-to-r from-[#5f132f]/80 via-[#a11755]/40 to-[#5f132f]/80" /> */}
 
       </div>
 
