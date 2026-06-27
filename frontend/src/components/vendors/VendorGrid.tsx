@@ -5,9 +5,16 @@ import { useVendorStore } from "@/store/vendorStore";
 
 
 export default function VendorGrid() {
-
-  const { search, city, sort, rating,budget ,cities} = useVendorStore();
-  const { categories } = useVendorStore();
+const {
+  search,
+  city,
+  category,
+  rating,
+  budget,
+  cities,
+  categories,
+  sort,
+} = useVendorStore();
 
   const filteredVendors = vendors.filter((vendor) => {
   const matchesSearch =
@@ -24,8 +31,11 @@ export default function VendorGrid() {
   cities.includes(vendor.city);
 
     const matchesCategory =
+  (!category || vendor.category === category) &&
+  (
     categories.length === 0 ||
-    categories.includes(vendor.category);
+    categories.includes(vendor.category)
+  );
 
     const matchesRating =
   rating === 0 || vendor.rating >= rating;
@@ -49,7 +59,7 @@ export default function VendorGrid() {
       <div className="mb-6 flex items-center justify-between">
 
         <h2 className="text-2xl font-bold text-gray-900">
-          {vendors.length} Vendors Found
+          {filteredVendors.length} Vendors Found
         </h2>
 
         <p className="text-sm text-gray-500">

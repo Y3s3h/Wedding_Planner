@@ -1,47 +1,107 @@
-import {
-  Calendar,
-  MapPin,
-  Search,
-  Sparkles,
-} from "lucide-react";
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { FaSearch } from "react-icons/fa";
+
+import LocationSelect from "../search/LocationSelect";
+import CategorySelect from "../search/CategorySelect";
+import DatePicker from "../search/DatePicker";
 
 export default function HeroSearch() {
-  return (
+  const router = useRouter();
 
-    
-    <div className="mt-12 w-full max-w-6xl rounded-3xl border border-white/20 bg-white/10 p-3 backdrop-blur-xl shadow-2xl">
+  const [location, setLocation] = useState("");
+  const [category, setCategory] = useState("");
+  const [date, setDate] = useState<Date>();
+
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+
+    if (location) {
+      params.set("city", location);
+    }
+
+    if (category) {
+      params.set("category", category);
+    }
+
+    if (date) {
+      params.set("date", date.toISOString().split("T")[0]);
+    }
+
+    router.push(`/vendors?${params.toString()}`);
+  };
+
+  return (
+    <div className="  relative isolate z-50 mt-12 w-full max-w-6xl rounded-3xl border border-white/20 bg-white/10 p-3 backdrop-blur-xl shadow-2xl">
 
       <div className="grid grid-cols-1 md:grid-cols-4">
 
-        <div className="flex items-center gap-4 px-6 py-4 border-b md:border-b-0 md:border-r border-white/20">
-          <MapPin className="text-rose-400" size={24} />
-          <div>
-            <p className="text-white font-semibold">Location</p>
-            <p className="text-gray-300 text-sm">Select your city</p>
-          </div>
+        {/* Location */}
+
+        <div className="border-b border-white/20 px-6 py-4 md:border-b-0 md:border-r">
+
+          <LocationSelect
+            value={location}
+            onChange={setLocation}
+          />
+
         </div>
 
-        <div className="flex items-center gap-4 px-6 py-4 border-b md:border-b-0 md:border-r border-white/20">
-          <Sparkles className="text-rose-400" size={24} />
-          <div>
-            <p className="text-white font-semibold">Category</p>
-            <p className="text-gray-300 text-sm">Select category</p>
-          </div>
+        {/* Category */}
+
+        <div className="border-b border-white/20 px-6 py-4 md:border-b-0 md:border-r">
+
+          <CategorySelect
+            value={category}
+            onChange={setCategory}
+          />
+
         </div>
 
-        <div className="flex items-center gap-4 px-6 py-4 border-b md:border-b-0 md:border-r border-white/20">
-          <Calendar className="text-rose-400" size={24} />
-          <div>
-            <p className="text-white font-semibold">Date</p>
-            <p className="text-gray-300 text-sm">Select date</p>
-          </div>
+        {/* Date */}
+
+        <div className="border-b border-white/20 px-6 py-4 md:border-b-0 md:border-r">
+
+          <DatePicker
+            value={date}
+            onChange={setDate}
+          />
+
         </div>
+
+        {/* Search */}
 
         <div className="flex items-center justify-center p-3">
-          <button className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-500 py-4 font-semibold text-white transition hover:scale-105">
-            <Search size={20} />
+
+          <button
+            onClick={handleSearch}
+            className="
+              flex
+              w-full
+              items-center
+              justify-center
+              gap-3
+              rounded-2xl
+              bg-gradient-to-r
+              from-rose-500
+              to-pink-500
+              py-4
+              font-semibold
+              text-white
+              transition-all
+              duration-300
+              hover:scale-105
+              hover:shadow-[0_15px_40px_rgba(244,63,94,.45)]
+            "
+          >
+            <FaSearch />
+
             Search
+
           </button>
+
         </div>
 
       </div>

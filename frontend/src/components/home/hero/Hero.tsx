@@ -22,7 +22,7 @@ export default function Hero() {
 
       {/* Hero Content */}
       
-      <div className="relative z-10 flex h-full items-start justify-center pt-16 lg:pt-20">
+      <div className="relative  flex h-full items-start justify-center pt-16 lg:pt-20">
        
        <motion.div
   initial={{ opacity: 0, y: 40 }}
@@ -30,7 +30,7 @@ export default function Hero() {
   transition={{
     duration: 1,
   }}
-  className="relative z-10 flex h-full items-center justify-center"
+  className="relative  flex h-full items-center justify-center"
 >
   <HeroContent />
 </motion.div>

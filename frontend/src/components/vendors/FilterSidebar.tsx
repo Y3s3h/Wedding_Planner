@@ -13,13 +13,15 @@ import {
 } from "lucide-react";
 
 const categoryOptions = [
-  { name: "Venue", icon: Building2 },
+  { name: "Wedding Venue", icon: Building2 },
   { name: "Photographer", icon: Camera },
-  { name: "Makeup", icon: Sparkles },
+  { name: "Makeup Artist", icon: Sparkles },
   { name: "Decorator", icon: Flower2 },
-  { name: "Caterer", icon: UtensilsCrossed },
-  { name: "DJ", icon: Music2 },
-  { name: "Planner", icon: HeartHandshake },
+  { name: "Catering", icon: UtensilsCrossed },
+  { name: "DJ & Music", icon: Music2 },
+  { name: "Wedding Planner", icon: HeartHandshake },
+  { name: "Wedding Transport", icon: Building2 },
+  { name: "Florist", icon: Flower2 },
 ];
 
 const cityOptions = [
@@ -28,8 +30,12 @@ const cityOptions = [
   "Mumbai",
   "Goa",
   "Udaipur",
+  "Bengaluru",
+  "Hyderabad",
+  "Pune",
+  "Chandigarh",
+  "Kolkata",
 ];
-
 export default function FilterSidebar() {
 
   
@@ -124,7 +130,7 @@ export default function FilterSidebar() {
   </h3>
 
   <div className="space-y-3">
-    {[5, 4, 3].map((star) => (
+    {[5, 4.5, 4, 3.5, 3].map((star) => (
       <label
         key={star}
         className="flex cursor-pointer items-center gap-3 rounded-lg p-2 hover:bg-rose-50"
@@ -160,18 +166,22 @@ export default function FilterSidebar() {
        <input
   type="range"
   min={20000}
-  max={500000}
+  max={1000000}
   step={5000}
   value={budget}
   onChange={(e) => setBudget(Number(e.target.value))}
   className="w-full accent-rose-500"
 />
 
+ <p className="mt-3 text-center text-sm font-medium text-rose-600">
+    Up to ₹{budget.toLocaleString("en-IN")}
+  </p>
+
         <div className="mt-2 flex justify-between text-sm text-gray-500">
 
           <span>₹20K</span>
 
-          <span>₹5L+</span>
+<span>₹10L+</span>
 
         </div>
 
