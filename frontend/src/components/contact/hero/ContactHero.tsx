@@ -105,7 +105,7 @@ export default function ContactHero() {
 
         {/* Overlay */}
         <div className="absolute inset-0 bg-black/65" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#23060f]/85 via-[#5b1632]/40 to-[#23060f]/70" />
+        {/* <div className="absolute inset-0 bg-gradient-to-r from-[#23060f]/85 via-[#5b1632]/40 to-[#23060f]/70" /> */}
       </div>
 
       {/* Glow */}
