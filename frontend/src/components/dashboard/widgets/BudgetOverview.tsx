@@ -1,0 +1,150 @@
+"use client";
+
+import {
+  Wallet,
+  TrendingUp,
+  CircleDollarSign,
+} from "lucide-react";
+
+const totalBudget = 1000000;
+const spent = 620000;
+const remaining = totalBudget - spent;
+
+const percentage = Math.round(
+  (spent / totalBudget) * 100
+);
+
+export default function BudgetOverview() {
+  return (
+    <div className="rounded-3xl border border-gray-200 bg-white shadow-sm">
+
+      {/* Header */}
+
+      <div className="border-b border-gray-100 px-7 py-6">
+
+        <div className="flex items-center gap-3">
+
+          <div className="rounded-2xl bg-rose-50 p-3">
+
+            <Wallet
+              className="text-rose-500"
+              size={22}
+            />
+
+          </div>
+
+          <div>
+
+            <h2 className="text-2xl font-bold text-gray-900">
+              Budget Overview
+            </h2>
+
+            <p className="text-sm text-gray-500">
+              Wedding spending summary
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div className="space-y-7 p-7">
+
+        {/* Budget */}
+
+        <div>
+
+          <div className="mb-2 flex justify-between">
+
+            <span className="text-gray-500">
+              Budget Used
+            </span>
+
+            <span className="font-semibold text-rose-500">
+              {percentage}%
+            </span>
+
+          </div>
+
+          <div className="h-3 rounded-full bg-gray-100">
+
+            <div
+              style={{
+                width: `${percentage}%`,
+              }}
+              className="h-3 rounded-full bg-gradient-to-r from-rose-500 to-pink-500"
+            />
+
+          </div>
+
+        </div>
+
+        {/* Stats */}
+
+        <div className="space-y-5">
+
+          <div className="flex items-center justify-between">
+
+            <div className="flex items-center gap-3">
+
+              <CircleDollarSign
+                className="text-green-500"
+                size={20}
+              />
+
+              <span>Total Budget</span>
+
+            </div>
+
+            <span className="font-bold">
+              ₹10,00,000
+            </span>
+
+          </div>
+
+          <div className="flex items-center justify-between">
+
+            <div className="flex items-center gap-3">
+
+              <TrendingUp
+                className="text-red-500"
+                size={20}
+              />
+
+              <span>Spent</span>
+
+            </div>
+
+            <span className="font-bold text-red-500">
+              ₹6,20,000
+            </span>
+
+          </div>
+
+          <div className="flex items-center justify-between">
+
+            <div className="flex items-center gap-3">
+
+              <Wallet
+                className="text-rose-500"
+                size={20}
+              />
+
+              <span>Remaining</span>
+
+            </div>
+
+            <span className="font-bold text-green-600">
+              ₹3,80,000
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  );
+}

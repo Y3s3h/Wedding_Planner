@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 export default function CTAButton() {
   return (
-    <Link href="/register">
+    <Link href="/vendors">
       <Button className="group rounded-full bg-gradient-to-r from-rose-500 to-rose-600 px-7 py-6 text-white shadow-lg shadow-rose-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
         Start Planning
 

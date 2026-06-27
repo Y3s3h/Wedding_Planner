@@ -145,7 +145,7 @@ export default function GallerySection() {
         </div>
 
         {/* Button */}
-        <div className="mt-16 text-center">
+        {/* <div className="mt-16 text-center">
           <Link
   href="/stories"
   className="
@@ -168,7 +168,7 @@ export default function GallerySection() {
 >
   View More Stories
 </Link>
-        </div>
+        </div> */}
       </div>
     </section>
   );

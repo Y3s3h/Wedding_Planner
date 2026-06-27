@@ -1,3 +1,13 @@
+export type UserRole =
+  | "customer"
+  | "vendor"
+  | "admin";
+
+export type VendorStatus =
+  | "pending"
+  | "approved"
+  | "rejected";
+
 export interface User {
   _id: string;
 
@@ -8,6 +18,16 @@ export interface User {
   phone: string;
 
   avatar?: string;
+
+  role: UserRole;
+
+  status?: VendorStatus;
+
+  isVerified: boolean;
+
+  createdAt: string;
+
+  updatedAt: string;
 }
 
 export interface LoginData {

@@ -1,5 +1,5 @@
 import { ArrowRight, Award } from "lucide-react";
-
+import Link from "next/link";
 export default function BottomBanner() {
   return (
     <div
@@ -88,9 +88,9 @@ export default function BottomBanner() {
         </div>
 
         {/* Button */}
-
+<Link href="/vendors">
         <button
-        
+         
           className="
           group
           flex
@@ -119,7 +119,7 @@ export default function BottomBanner() {
             className="transition group-hover:translate-x-2"
           />
         </button>
-
+</Link>
       </div>
 
     </div>

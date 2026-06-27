@@ -14,13 +14,15 @@ import {
 
 import { useAuthStore } from "@/store/authStore";
 
-export default function RegisterModal() {
-  const {
-    isRegisterOpen,
-    closeRegister,
-    openLogin,
-  } = useAuthStore();
+import { registerUser } from "@/services/auth.service";
 
+export default function RegisterModal() {
+ const {
+  isRegisterOpen,
+  closeRegister,
+  openLogin,
+  login,
+} = useAuthStore();
   const [loading, setLoading] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
@@ -38,6 +40,19 @@ export default function RegisterModal() {
     confirmPassword: "",
   });
 
+
+
+//errros store 
+
+const [errors, setErrors] = useState({
+  name: "",
+  email: "",
+  phone: "",
+  password: "",
+  confirmPassword: "",
+});
+
+
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -52,14 +67,88 @@ export default function RegisterModal() {
   }, [closeRegister]);
 
   const handleRegister = () => {
-    setLoading(true);
 
-    setTimeout(() => {
-      setLoading(false);
-      closeRegister();
-      openLogin();
-    }, 2000);
+
+    const newErrors = {
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
   };
+
+  // Name validation
+  if (!form.name.trim()) {
+    newErrors.name = "Full name is required.";
+  } else if (form.name.trim().length < 3) {
+    newErrors.name = "Name must be at least 3 characters.";
+  }
+
+  // Email validation
+  if (!form.email.trim()) {
+    newErrors.email = "Email is required.";
+  } else if (
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)
+  ) {
+    newErrors.email = "Enter a valid email address.";
+  }
+
+  // Phone validation
+if (!form.phone.trim()) {
+  newErrors.phone = "Phone number is required.";
+} else if (!/^[6-9]\d{9}$/.test(form.phone)) {
+  newErrors.phone = "Enter a valid 10-digit phone number.";
+}
+
+// Password validation
+if (!form.password) {
+  newErrors.password = "Password is required.";
+} else if (form.password.length < 8) {
+  newErrors.password =
+    "Password must be at least 8 characters.";
+}
+
+// Confirm Password validation
+if (!form.confirmPassword) {
+  newErrors.confirmPassword =
+    "Please confirm your password.";
+} else if (
+  form.password !== form.confirmPassword
+) {
+  newErrors.confirmPassword =
+    "Passwords do not match.";
+}
+
+
+  setErrors(newErrors);
+
+  if (Object.values(newErrors).some((error) => error !== "")) {
+    return;
+  }
+
+  
+  setLoading(true);
+
+const result = registerUser(form);
+
+if (!result.success) {
+  setLoading(false);
+
+  setErrors((prev) => ({
+    ...prev,
+    email: result.message,
+  }));
+
+  return;
+}
+
+login(result.user!);
+
+setLoading(false);
+
+closeRegister();
+};
+
 
   return (
     <AnimatePresence>
@@ -117,7 +206,7 @@ export default function RegisterModal() {
               {/* Full Name */}
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
   {/* Full Name */}
-  <div>
+  {/* <div>
     <label className="mb-2 block text-sm font-medium text-gray-700">
       Full Name
     </label>
@@ -140,34 +229,74 @@ export default function RegisterModal() {
         className="h-11 w-full rounded-xl border border-gray-300 pl-11 pr-4 text-gray-700 outline-none transition focus:border-rose-500"
       />
     </div>
+  </div> */}
+
+
+
+
+<div>
+  <label className="mb-2 block text-sm font-medium text-gray-700">
+    Full Name
+  </label>
+
+  <div className="relative">
+    <User
+      size={18}
+      className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+    />
+
+    <input
+      value={form.name}
+      onChange={(e) =>
+        setForm({
+          ...form,
+          name: e.target.value,
+        })
+      }
+      placeholder="Full Name"
+      className="h-11 w-full rounded-xl border border-gray-300 pl-11 pr-4 text-gray-700 outline-none transition focus:border-rose-500"
+    />
   </div>
+
+  {errors.name && (
+    <p className="mt-1 text-sm text-red-500">
+      {errors.name}
+    </p>
+  )}
+</div>
 
   {/* Email */}
   <div>
-    <label className="mb-2 block text-sm font-medium text-gray-700">
-      Email
-    </label>
+  <label className="mb-2 block text-sm font-medium text-gray-700">
+    Email
+  </label>
 
-    <div className="relative">
-      <Mail
-        size={18}
-        className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-      />
+  <div className="relative">
+    <Mail
+      size={18}
+      className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+    />
 
-      <input
-        type="email"
-        value={form.email}
-        onChange={(e) =>
-          setForm({
-            ...form,
-            email: e.target.value,
-          })
-        }
-        placeholder="Email"
-        className="h-11 w-full rounded-xl border border-gray-300 pl-11 pr-4 text-gray-700 outline-none transition focus:border-rose-500"
-      />
-    </div>
+    <input
+      type="email"
+      value={form.email}
+      onChange={(e) =>
+        setForm({
+          ...form,
+          email: e.target.value,
+        })
+      }
+      placeholder="Email"
+      className="h-11 w-full rounded-xl border border-gray-300 pl-11 pr-4 text-gray-700 outline-none transition focus:border-rose-500"
+    />
   </div>
+
+  {errors.email && (
+    <p className="mt-1 text-sm text-red-500">
+      {errors.email}
+    </p>
+  )}
+</div>
 
   {/* Phone */}
   <div>
@@ -193,6 +322,11 @@ export default function RegisterModal() {
         className="h-11 w-full rounded-xl border border-gray-300 pl-11 pr-4 text-gray-700 outline-none transition focus:border-rose-500"
       />
     </div>
+    {errors.phone && (
+  <p className="mt-1 text-sm text-red-500">
+    {errors.phone}
+  </p>
+)}
   </div>
 
   {/* Password */}
@@ -228,12 +362,28 @@ export default function RegisterModal() {
         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
       </button>
     </div>
+    {errors.password && (
+  <p className="mt-1 text-sm text-red-500">
+    {errors.password}
+  </p>
+)}
   </div>
+  
 </div>
 
               
 
               
+
+
+
+
+
+
+
+
+
+
 
                
               {/* Confirm Password */}
@@ -275,6 +425,11 @@ export default function RegisterModal() {
                     )}
                   </button>
                 </div>
+                {errors.confirmPassword && (
+  <p className="mt-1 text-sm text-red-500">
+    {errors.confirmPassword}
+  </p>
+)}
               </div>
 
               {/* Password Strength */}
@@ -378,7 +533,7 @@ export default function RegisterModal() {
                   type="button"
                   onClick={() => {
                     closeRegister();
-                    openLogin();
+                    // openLogin();
                   }}
                   className="ml-2 font-semibold text-rose-500 transition hover:text-rose-600"
                 >

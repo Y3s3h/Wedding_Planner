@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -11,6 +13,8 @@ import {
 } from "lucide-react";
 
 import { useAuthStore } from "@/store/authStore";
+
+import { loginUser } from "@/services/auth.service";
 
 export default function LoginModal() {
   const {
@@ -27,6 +31,11 @@ export default function LoginModal() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
+
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -39,22 +48,94 @@ export default function LoginModal() {
     return () => window.removeEventListener("keydown", handleEsc);
   }, [closeLogin]);
 
+  // const handleLogin = () => {
+  //   const newErrors = {
+  //     email: "",
+  //     password: "",
+  //   };
+
+  //   if (!email.trim()) {
+  //     newErrors.email = "Email is required.";
+  //   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  //     newErrors.email = "Enter a valid email.";
+  //   }
+
+  //   if (!password) {
+  //     newErrors.password = "Password is required.";
+  //   }
+
+  //   setErrors(newErrors);
+
+  //   if (Object.values(newErrors).some(Boolean)) {
+  //     return;
+  //   }
+
+  //   setLoading(true);
+
+  //   setTimeout(() => {
+  //     login({
+  //       _id: "1",
+  //       name: "Yash Yadav",
+  //       email,
+  //       phone: "9876543210",
+  //       avatar: "",
+  //       role: "customer",
+  //       isVerified: true,
+  //       createdAt: new Date().toISOString(),
+  //       updatedAt: new Date().toISOString(),
+  //     });
+
+  //     setLoading(false);
+  //     closeLogin();
+  //   }, 1500);
+  // };
+
+
   const handleLogin = () => {
-    setLoading(true);
-
-    setTimeout(() => {
-      login({
-        _id: "1",
-        name: "Yash Yadav",
-        email,
-        phone: "9876543210",
-      });
-
-      setLoading(false);
-      closeLogin();
-    }, 1500);
+  const newErrors = {
+    email: "",
+    password: "",
   };
 
+  if (!email.trim()) {
+    newErrors.email = "Email is required.";
+  } else if (
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+  ) {
+    newErrors.email = "Enter a valid email.";
+  }
+
+  if (!password) {
+    newErrors.password = "Password is required.";
+  }
+
+  setErrors(newErrors);
+
+  if (Object.values(newErrors).some(Boolean)) {
+    return;
+  }
+
+  setLoading(true);
+
+  const result = loginUser(email, password);
+
+  if (!result.success) {
+    setLoading(false);
+
+    setErrors({
+      email: result.message,
+      password: "",
+    });
+
+    return;
+  }
+
+  login(result.user!);
+
+  setLoading(false);
+
+  closeLogin();
+};
   return (
     <AnimatePresence>
       {isLoginOpen && (
@@ -124,11 +205,29 @@ export default function LoginModal() {
                   <input
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (errors.email) {
+                        setErrors((prev) => ({
+                          ...prev,
+                          email: "",
+                        }));
+                      }
+                    }}
                     placeholder="Enter your email"
-                    className="h-12 w-full rounded-xl border border-gray-300 pl-12 pr-4 text-gray-700 outline-none focus:border-rose-500"
+                    className={`h-12 w-full rounded-xl border pl-12 pr-4 text-gray-700 outline-none transition ${
+                      errors.email
+                        ? "border-red-500 focus:border-red-500"
+                        : "border-gray-300 focus:border-rose-500"
+                    }`}
                   />
                 </div>
+
+                {errors.email && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.email}
+                  </p>
+                )}
               </div>
 
               {/* Password */}
@@ -146,9 +245,21 @@ export default function LoginModal() {
                   <input
                     type={showPassword ? "text" : "password"}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (errors.password) {
+                        setErrors((prev) => ({
+                          ...prev,
+                          password: "",
+                        }));
+                      }
+                    }}
                     placeholder="Password"
-                    className="h-12 w-full rounded-xl border border-gray-300 pl-12 pr-12 text-gray-700 outline-none focus:border-rose-500"
+                    className={`h-12 w-full rounded-xl border pl-12 pr-12 text-gray-700 outline-none transition ${
+                      errors.password
+                        ? "border-red-500 focus:border-red-500"
+                        : "border-gray-300 focus:border-rose-500"
+                    }`}
                   />
 
                   <button
@@ -163,6 +274,12 @@ export default function LoginModal() {
                     )}
                   </button>
                 </div>
+
+                {errors.password && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.password}
+                  </p>
+                )}
               </div>
 
               {/* Remember Me + Forgot Password */}
