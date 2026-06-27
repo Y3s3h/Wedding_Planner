@@ -1,11 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
 
-  register(registerDto: RegisterDto) {
+  constructor(
+    private readonly prisma: PrismaService,
+  ) {}
+
+  async register(registerDto: RegisterDto) {
     return {
       success: true,
       message: 'User Registration API Working',
