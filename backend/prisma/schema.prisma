@@ -14,20 +14,189 @@ enum Role {
 }
 
 model User {
+  id         String   @id @default(uuid())
+  name       String
+  email      String   @unique
+  password   String
+  role       Role     @default(USER)
+  phone      String?  @unique
+  isVerified Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  vendor        Vendor?
+  bookings      Booking[]
+  reviews       Review[]
+  budgets       Budget[]
+  timelines     Timeline[]
+  checklists    Checklist[]
+  notifications Notification[]
+  guests        Guest[]
+}
+
+model Vendor {
+  id           String   @id @default(uuid())
+  businessName String
+  description  String?
+  address      String?
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id])
+
+  packages  Package[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Category {
+  id    String  @id @default(uuid())
+  name  String  @unique
+  image String?
+
+  vendors   Vendor[]
+  packages  Package[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Package {
+  id          String  @id @default(uuid())
+  title       String
+  description String?
+  price       Decimal @db.Decimal(10, 2)
+
+  vendorId String
+  vendor   Vendor @relation(fields: [vendorId], references: [id])
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  bookings  Booking[]
+  reviews   Review[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model Booking {
   id String @id @default(uuid())
 
-  name String
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
-  email String @unique
+  packageId String
+  package   Package @relation(fields: [packageId], references: [id])
 
-  password String
-
-  role  Role   @default(USER)
-  phone String @unique
-
-  isVerified Boolean @default(false)
+  eventDate     DateTime
+  status        BookingStatus @default(PENDING)
+  totalAmount   Decimal       @db.Decimal(10, 2)
+  paymentStatus PaymentStatus @default(PENDING)
 
   createdAt DateTime @default(now())
-
   updatedAt DateTime @updatedAt
+}
+
+model Review {
+  id      String  @id @default(uuid())
+  rating  Int     @default(5)
+  comment String?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  packageId String
+  package   Package @relation(fields: [packageId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+enum GuestStatus {
+  INVITED
+  CONFIRMED
+  DECLINED
+}
+
+model Guest {
+  id     String  @id @default(uuid())
+  name   String
+  phone  String?
+  email  String?
+  status GuestStatus @default(INVITED)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Budget {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  totalBudget Decimal @db.Decimal(10, 2)
+  spentAmount Decimal @default(0) @db.Decimal(10, 2)
+  category    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum TimelineStatus {
+  PENDING
+  DONE
+}
+
+model Timeline {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  title       String
+  date        DateTime
+  description String?
+  status      TimelineStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+}
+
+model Checklist {
+  id     String  @id @default(uuid())
+  task   String
+  isDone Boolean @default(false)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id      String  @id @default(uuid())
+  title   String
+  message String
+  isRead  Boolean @default(false)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
 }
