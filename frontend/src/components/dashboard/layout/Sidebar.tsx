@@ -79,7 +79,7 @@ export default function Sidebar() {
               <div className="rounded-2xl bg-white/20 p-3">
                 <Sparkles size={24} />
               </div>
-
+      <Link href="/">
               <div>
                 <h2 className="text-2xl font-bold">
                   WedPlanner
@@ -89,7 +89,8 @@ export default function Sidebar() {
                   Customer Dashboard
                 </p>
               </div>
-
+              </Link>
+  
             </div>
 
           </div>
@@ -167,11 +168,11 @@ export default function Sidebar() {
             <p className="mt-2 text-sm text-gray-500">
               Wedding experts are available 24×7.
             </p>
-
+        <Link href="/contact">
             <button className="mt-5 w-full rounded-2xl bg-rose-500 py-3 font-semibold text-white transition hover:bg-rose-600">
               Contact Support
             </button>
-
+</Link>
           </div>
 
           <button className="mt-5 flex w-full items-center gap-3 rounded-2xl px-4 py-3 font-medium text-red-500 transition hover:bg-red-50">
