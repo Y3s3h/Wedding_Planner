@@ -4,56 +4,75 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
-  CalendarDays,
-  Heart,
-  User,
-  Wallet,
+  CalendarCheck2,
+  BriefcaseBusiness,
+  Images,
+  Star,
   MessageCircle,
+  CalendarDays,
+  Wallet,
+  BarChart3,
+  User,
   Settings,
   LogOut,
-  Sparkles,
   ChevronRight,
+  Building2,
 } from "lucide-react";
 
 const menuItems = [
   {
     title: "Dashboard",
-    href: "/customer",
+    href: "/vendor",
     icon: LayoutDashboard,
   },
   {
-    title: "Wedding Planner",
-    href: "/customer/planner",
-    icon: CalendarDays,
-  },
-  {
     title: "Bookings",
-    href: "/customer/bookings",
-    icon: CalendarDays,
+    href: "/vendor/bookings",
+    icon: CalendarCheck2,
   },
   {
-    title: "Wishlist",
-    href: "/customer/wishlist",
-    icon: Heart,
+    title: "Services",
+    href: "/vendor/services",
+    icon: BriefcaseBusiness,
+  },
+  {
+    title: "Portfolio",
+    href: "/vendor/portfolio",
+    icon: Images,
+  },
+  {
+    title: "Reviews",
+    href: "/vendor/reviews",
+    icon: Star,
   },
   {
     title: "Messages",
-    href: "/customer/messages",
+    href: "/vendor/messages",
     icon: MessageCircle,
   },
   {
-    title: "Budget",
-    href: "/customer/budget",
+    title: "Calendar",
+    href: "/vendor/calendar",
+    icon: CalendarDays,
+  },
+  {
+    title: "Earnings",
+    href: "/vendor/earnings",
     icon: Wallet,
   },
   {
+    title: "Analytics",
+    href: "/vendor/analytics",
+    icon: BarChart3,
+  },
+  {
     title: "Profile",
-    href: "/customer/profile",
+    href: "/vendor/profile",
     icon: User,
   },
   {
     title: "Settings",
-    href: "/customer/settings",
+    href: "/vendor/settings",
     icon: Settings,
   },
 ];
@@ -62,59 +81,63 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    // <aside className="hidden w-72 shrink-0 border-r border-gray-200 bg-white lg:flex">
-<aside className="sticky left-0 top-0 hidden h-screen w-72 border-r border-gray-200 bg-white lg:flex">
+    <aside className="hidden h-screen w-72 shrink-0 border-r border-slate-200 bg-white lg:flex">
 
       <div className="flex h-full w-full flex-col">
-      
 
         {/* Logo */}
 
-        <div className="border-b border-gray-100 p-6">
 
-          <div className="rounded-3xl bg-gradient-to-br from-rose-500 to-pink-500 p-5 text-white shadow-xl">
+<Link href="/">
+        <div className="border-b border-slate-100 p-6">
+
+          <div className="rounded-3xl bg-gradient-to-br from-slate-800 to-blue-700 p-5 text-white shadow-xl">
 
             <div className="flex items-center gap-4">
 
               <div className="rounded-2xl bg-white/20 p-3">
-                <Sparkles size={24} />
+
+                <Building2 size={24} />
+
               </div>
-      <Link href="/">
+
               <div>
+
                 <h2 className="text-2xl font-bold">
-                  WedPlanner
+                  Vendor Hub
                 </h2>
 
-                <p className="text-sm text-rose-100">
-                  Customer Dashboard
+                <p className="text-sm text-slate-200">
+                  Business Dashboard
                 </p>
+
               </div>
-              </Link>
-  
+
             </div>
 
           </div>
 
         </div>
 
+        </Link>
+
         {/* Navigation */}
 
         <nav className="flex-1 overflow-y-auto px-4 py-6">
 
-          <p className="mb-5 px-4 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
-            Main Menu
+          <p className="mb-5 px-4 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+            Business
           </p>
 
           <div className="space-y-2">
 
             {menuItems.map((item) => {
-
               const Icon = item.icon;
 
-              const active = pathname === item.href;
+              const active =
+                pathname === item.href;
 
               return (
-
                 <Link
                   key={item.title}
                   href={item.href}
@@ -122,8 +145,8 @@ export default function Sidebar() {
 
                   ${
                     active
-                      ? "bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-lg"
-                      : "text-gray-600 hover:bg-rose-50 hover:text-rose-500"
+                      ? "bg-gradient-to-r from-slate-800 to-blue-700 text-white shadow-lg"
+                      : "text-slate-600 hover:bg-slate-100"
                   }`}
                 >
 
@@ -147,7 +170,6 @@ export default function Sidebar() {
                   />
 
                 </Link>
-
               );
             })}
 
@@ -157,22 +179,24 @@ export default function Sidebar() {
 
         {/* Bottom */}
 
-        <div className="border-t border-gray-100 p-5">
+        <div className="border-t border-slate-100 p-5">
 
-          <div className="rounded-3xl bg-rose-50 p-5">
+          <div className="rounded-3xl bg-slate-100 p-5">
 
-            <h3 className="font-semibold text-gray-800">
-              Need Help?
+            <h3 className="font-semibold text-slate-800">
+              Vendor Support
             </h3>
 
-            <p className="mt-2 text-sm text-gray-500">
-              Wedding experts are available 24×7.
+            <p className="mt-2 text-sm text-slate-500">
+              Need help managing your business?
             </p>
-        <Link href="/contact">
-            <button className="mt-5 w-full rounded-2xl bg-rose-500 py-3 font-semibold text-white transition hover:bg-rose-600">
+
+            <button className="mt-5 w-full rounded-2xl bg-slate-800 py-3 font-semibold text-white transition hover:bg-slate-700">
+
               Contact Support
+
             </button>
-</Link>
+
           </div>
 
           <button className="mt-5 flex w-full items-center gap-3 rounded-2xl px-4 py-3 font-medium text-red-500 transition hover:bg-red-50">
