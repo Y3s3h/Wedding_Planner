@@ -8,6 +8,8 @@ import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 
 import { UsersModule } from './users/users.module';
+import { ChatbotModule } from './chatbot/chatbot.module';
+import { CategoriesModule } from './categories/categories.module';
 
 import { VendorModule } from './vendor/vendor.module';
 
@@ -21,6 +23,8 @@ import { VendorModule } from './vendor/vendor.module';
     AuthModule,
     UsersModule,
     VendorModule,
+    ChatbotModule,
+    CategoriesModule, 
   ],
   controllers: [AppController],
   providers: [AppService],
