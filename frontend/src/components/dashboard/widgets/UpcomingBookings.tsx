@@ -7,35 +7,14 @@ import {
   MapPin,
   ArrowRight,
 } from "lucide-react";
+import { useBookingStore } from "@/store";
 
-const bookings = [
-  {
-    id: 1,
-    vendor: "Royal Palace Jaipur",
-    service: "Venue Visit",
-    date: "Tomorrow",
-    time: "11:00 AM",
-    location: "Jaipur",
-  },
-  {
-    id: 2,
-    vendor: "Bliss Photography",
-    service: "Final Discussion",
-    date: "Friday",
-    time: "3:30 PM",
-    location: "Delhi",
-  },
-  {
-    id: 3,
-    vendor: "Melody Beats",
-    service: "Music Planning",
-    date: "12 Aug",
-    time: "5:00 PM",
-    location: "Pune",
-  },
-];
+
 
 export default function UpcomingBookings() {
+  const bookings = useBookingStore(
+  (state) => state.bookings
+);
   return (
     <div className="rounded-3xl border border-gray-200 bg-white shadow-sm">
 
@@ -72,28 +51,28 @@ export default function UpcomingBookings() {
           >
             <div>
               <h3 className="font-semibold text-gray-900">
-                {booking.vendor}
+               {booking.vendorName}
               </h3>
 
               <p className="mt-1 text-sm text-gray-500">
-                {booking.service}
+                {booking.serviceName}
               </p>
 
               <div className="mt-3 flex flex-wrap items-center gap-4 text-sm text-gray-500">
 
                 <span className="flex items-center gap-1">
                   <CalendarDays size={15} />
-                  {booking.date}
+                  {booking.eventDate}
                 </span>
 
                 <span className="flex items-center gap-1">
                   <Clock3 size={15} />
-                  {booking.time}
+                  {booking.eventTime}
                 </span>
 
                 <span className="flex items-center gap-1">
                   <MapPin size={15} />
-                  {booking.location}
+                  {booking.venue}
                 </span>
 
               </div>

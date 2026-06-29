@@ -5,22 +5,12 @@ import {
   ArrowRight,
 } from "lucide-react";
 
-const tasks = [
-  {
-    title: "Meet Decorator",
-    date: "Tomorrow • 11:00 AM",
-  },
-  {
-    title: "Food Tasting",
-    date: "Friday • 2:30 PM",
-  },
-  {
-    title: "Invitation Printing",
-    date: "15 July",
-  },
-];
-
+import { useCustomerStore } from "@/store";
 export default function UpcomingTasks() {
+
+  const plannerTasks = useCustomerStore(
+  (state) => state.plannerTasks
+);
   return (
     <section className="rounded-3xl border border-gray-200 bg-white p-7 shadow-sm">
 
@@ -42,7 +32,7 @@ export default function UpcomingTasks() {
 
       <div className="space-y-4">
 
-        {tasks.map((task) => (
+       {plannerTasks.map((task) => (
 
           <div
             key={task.title}
@@ -74,11 +64,11 @@ export default function UpcomingTasks() {
               <div>
 
                 <h3 className="font-semibold text-gray-900">
-                  {task.title}
+                  {task.id}
                 </h3>
 
                 <p className="mt-1 text-sm text-gray-500">
-                  {task.date}
+                  {task.dueDate}
                 </p>
 
               </div>

@@ -9,15 +9,31 @@ import {
   ArrowRight,
 } from "lucide-react";
 
-export default function WishlistCard() {
+interface WishlistCardProps {
+  vendorName: string;
+  category: string;
+  city: string;
+  rating: number;
+  startingPrice: number;
+  image: string;
+}
+
+export default function WishlistCard({
+  vendorName,
+  category,
+  city,
+  rating,
+  startingPrice,
+  image,
+}: WishlistCardProps) {
   return (
     <div className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-xl">
 
       <div className="relative h-60">
 
         <Image
-          src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800"
-          alt="Vendor"
+          src={image}
+          alt={vendorName}
           fill
           className="object-cover"
         />
@@ -38,7 +54,7 @@ export default function WishlistCard() {
         <div className="flex items-center justify-between">
 
           <h3 className="text-2xl font-bold text-gray-900">
-            Royal Palace
+            {vendorName}
           </h3>
 
           <span className="flex items-center gap-1 text-yellow-500">
@@ -48,26 +64,26 @@ export default function WishlistCard() {
               className="fill-current"
             />
 
-            4.9
+            {rating}
 
           </span>
 
         </div>
 
         <p className="mt-2 text-gray-500">
-          Wedding Venue
+          {category}
         </p>
 
         <div className="mt-4 flex items-center gap-2 text-gray-500">
 
           <MapPin size={18} />
 
-          Noida, Uttar Pradesh
+          {city}
 
         </div>
 
         <p className="mt-6 text-3xl font-bold text-gray-900">
-          ₹2,50,000
+          ₹{startingPrice.toLocaleString()}
         </p>
 
         <div className="mt-6 flex gap-3">

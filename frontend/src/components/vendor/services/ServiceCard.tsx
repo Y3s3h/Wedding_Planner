@@ -100,7 +100,7 @@ interface Props {
   title: string;
   category: string;
   price: string;
-  rating: string;
+  rating: number;
   image: string;
 }
 
