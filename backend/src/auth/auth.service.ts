@@ -3,14 +3,16 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 
 @Injectable()
 export class AuthService {
 
   constructor(
-    private readonly prisma: PrismaService,
-  ) {}
+  private readonly prisma: PrismaService,
+  private readonly jwtService: JwtService,
+) {}
 
   async register(registerDto: RegisterDto) {
 
@@ -59,12 +61,39 @@ if (existingPhone) {
     },
   };
 }
-  login(loginDto: LoginDto) {
+  async login(loginDto: LoginDto) {
+    const user = await this.prisma.user.findUnique({
+  where: {
+    email: loginDto.email,
+  },
+});
+if (!user) {
+  throw new BadRequestException('Invalid email or password');
+}
+  const isPasswordCorrect = await bcrypt.compare(
+  loginDto.password,
+  user.password,
+);
+if (!isPasswordCorrect) {
+  throw new BadRequestException('Invalid email or password');
+}
+const token = await this.jwtService.signAsync({
+  sub: user.id,
+  email: user.email,
+  role: user.role,
+});
   return {
-    success: true,
-    message: 'Login API Working',
-    data: loginDto,
-  };
+  success: true,
+  message: 'Login successful',
+  accessToken: token,
+  user: {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+    role: user.role,
+  },
+};
 }
 
 }
