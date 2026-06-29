@@ -9,6 +9,8 @@ import { PrismaModule } from './prisma/prisma.module';
 
 import { UsersModule } from './users/users.module';
 
+import { VendorModule } from './vendor/vendor.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -18,6 +20,7 @@ import { UsersModule } from './users/users.module';
     PrismaModule,
     AuthModule,
     UsersModule,
+    VendorModule,
   ],
   controllers: [AppController],
   providers: [AppService],
