@@ -9,6 +9,7 @@ import { PrismaModule } from './prisma/prisma.module';
 
 import { UsersModule } from './users/users.module';
 import { ChatbotModule } from './chatbot/chatbot.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { ChatbotModule } from './chatbot/chatbot.module';
     PrismaModule,
     AuthModule,
     UsersModule,
-    ChatbotModule, 
+    ChatbotModule,
+    CategoriesModule, 
   ],
   controllers: [AppController],
   providers: [AppService],
