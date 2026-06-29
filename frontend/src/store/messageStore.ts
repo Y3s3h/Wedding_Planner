@@ -1,9 +1,7 @@
 import { create } from "zustand";
 
 import { Message } from "@/types/message";
-import {
-  messages as initialMessages,
-} from "@/data/messages";
+import { messageService } from "@/services/message.service";
 
 interface MessageStore {
   messages: Message[];
@@ -27,7 +25,7 @@ interface MessageStore {
 
 export const useMessageStore =
   create<MessageStore>((set) => ({
-    messages: initialMessages,
+  messages: messageService.getMessages(),
 
     selectedConversation: null,
 

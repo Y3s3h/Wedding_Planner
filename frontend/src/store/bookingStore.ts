@@ -2,9 +2,22 @@ import { create } from "zustand";
 
 import { Booking } from "@/types/booking";
 import {
-  bookings as initialBookings,
+  bookings,
+  getBookingById,
 } from "@/data/bookings";
 
+class BookingService {
+  getBookings() {
+    return bookings;
+  }
+
+  getBooking(id: string) {
+    return getBookingById(id);
+  }
+}
+
+export const bookingService =
+  new BookingService();
 interface BookingStore {
   bookings: Booking[];
 
@@ -25,7 +38,7 @@ interface BookingStore {
 
 export const useBookingStore =
   create<BookingStore>((set) => ({
-    bookings: initialBookings,
+   bookings: bookingService.getBookings(),
 
     selectedBooking: null,
 

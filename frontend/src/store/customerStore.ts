@@ -3,8 +3,9 @@ import { create } from "zustand";
 import { PlannerTask } from "@/types/planner";
 import { WishlistItem } from "@/types/wishlist";
 
-import { plannerTasks as initialPlannerTasks } from "@/data/planner";
-import { wishlist as initialWishlist } from "@/data/wishlist";
+import {
+  customerService,
+} from "@/services/customer.service";
 
 interface CustomerStore {
   plannerTasks: PlannerTask[];
@@ -28,9 +29,11 @@ interface CustomerStore {
 
 export const useCustomerStore =
   create<CustomerStore>((set) => ({
-    plannerTasks: initialPlannerTasks,
+  plannerTasks:
+  customerService.getPlannerTasks(),
 
-    wishlist: initialWishlist,
+wishlist:
+  customerService.getWishlist(),
 
     setPlannerTasks: (tasks) =>
       set({
