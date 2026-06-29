@@ -11,6 +11,8 @@ import { UsersModule } from './users/users.module';
 import { ChatbotModule } from './chatbot/chatbot.module';
 import { CategoriesModule } from './categories/categories.module';
 
+import { VendorModule } from './vendor/vendor.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -20,6 +22,7 @@ import { CategoriesModule } from './categories/categories.module';
     PrismaModule,
     AuthModule,
     UsersModule,
+    VendorModule,
     ChatbotModule,
     CategoriesModule, 
   ],
