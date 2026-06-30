@@ -63,7 +63,7 @@ export default function ContactCTA() {
           </Link>
 
           <Link
-            href="/become-a-vendor"
+            href="/vendor/regsiter"
             className="group flex items-center gap-3 rounded-full border border-white/30 bg-white/10 px-12 py-4 text-lg font-semibold text-white backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:bg-white/20"
           >
             Become a Vendor

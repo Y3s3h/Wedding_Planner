@@ -7,7 +7,7 @@ import {
   MapPin,
   ArrowRight,
 } from "lucide-react";
-import { useBookingStore } from "@/store";
+import { useBookingStore } from "@/store/bookingStore";
 
 
 
@@ -55,7 +55,7 @@ export default function UpcomingBookings() {
               </h3>
 
               <p className="mt-1 text-sm text-gray-500">
-                {booking.serviceName}
+               {booking.packageName}
               </p>
 
               <div className="mt-3 flex flex-wrap items-center gap-4 text-sm text-gray-500">

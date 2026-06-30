@@ -12,7 +12,29 @@ import {
   Eye,
 } from "lucide-react";
 
-export default function BookingCard() {
+import { Booking } from "@/types/booking";
+
+interface BookingCardProps {
+  booking: Booking;
+}
+
+export default function BookingCard({
+  booking,
+}: BookingCardProps) {
+  const statusColor = {
+    pending:
+      "bg-yellow-100 text-yellow-700",
+
+    accepted:
+      "bg-green-100 text-green-700",
+
+    completed:
+      "bg-blue-100 text-blue-700",
+
+    cancelled:
+      "bg-red-100 text-red-700",
+  };
+
   return (
     <div
       className="
@@ -36,7 +58,7 @@ export default function BookingCard() {
 
           <Image
             src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800"
-            alt="Vendor"
+            alt={booking.vendorName}
             fill
             className="object-cover"
           />
@@ -49,29 +71,27 @@ export default function BookingCard() {
 
           <div>
 
-            {/* Top */}
-
             <div className="flex flex-wrap items-center justify-between gap-4">
 
               <div>
 
                 <h2 className="text-2xl font-bold text-gray-900">
-                  Royal Palace Banquet
+                  {booking.vendorName}
                 </h2>
 
                 <p className="mt-1 text-gray-500">
-                  Wedding Venue
+                  {booking.category}
                 </p>
 
               </div>
 
-              <span className="rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-green-700">
-                Confirmed
+              <span
+                className={`rounded-full px-4 py-2 text-sm font-semibold capitalize ${statusColor[booking.bookingStatus]}`}
+              >
+                {booking.bookingStatus}
               </span>
 
             </div>
-
-            {/* Info */}
 
             <div className="mt-6 grid gap-4 md:grid-cols-2">
 
@@ -83,7 +103,7 @@ export default function BookingCard() {
                 />
 
                 <span className="text-gray-700">
-                  12 February 2027
+                  {booking.eventDate}
                 </span>
 
               </div>
@@ -96,7 +116,7 @@ export default function BookingCard() {
                 />
 
                 <span className="text-gray-700">
-                  11:00 AM
+                  {booking.eventTime || "--"}
                 </span>
 
               </div>
@@ -109,7 +129,7 @@ export default function BookingCard() {
                 />
 
                 <span className="text-gray-700">
-                  Noida, Uttar Pradesh
+                  {booking.city || "--"}
                 </span>
 
               </div>
@@ -122,7 +142,7 @@ export default function BookingCard() {
                 />
 
                 <span className="text-gray-700">
-                  ₹2,50,000 Paid
+                  ₹{booking.amount.toLocaleString("en-IN")}
                 </span>
 
               </div>
@@ -136,7 +156,7 @@ export default function BookingCard() {
           <div className="mt-8 flex flex-wrap gap-3">
 
             <Link
-              href="/customer/bookings/1"
+              href={`/customer/bookings/${booking.id}`}
               className="flex items-center gap-2 rounded-2xl bg-indigo-600 px-5 py-3 font-semibold text-white transition hover:bg-indigo-700"
             >
               <Eye size={18} />

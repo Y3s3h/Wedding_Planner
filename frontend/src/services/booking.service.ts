@@ -1,17 +1,93 @@
-import {
-  bookings,
-  getBookingById,
-} from "@/data/bookings";
+import { Booking, BookingStatus } from "@/types/booking";
 
-class BookingService {
-  getBookings() {
-    return bookings;
+const STORAGE_KEY = "bookings";
+
+export function getBookings(): Booking[] {
+  const data = localStorage.getItem(STORAGE_KEY);
+
+  if (!data) {
+    return [];
   }
 
-  getBooking(id: string) {
-    return getBookingById(id);
-  }
+  return JSON.parse(data);
 }
 
-export const bookingService =
-  new BookingService();
+export function saveBookings(
+  bookings: Booking[]
+): void {
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(bookings)
+  );
+}
+
+export function createBooking(
+  booking: Booking
+): void {
+  const bookings = getBookings();
+
+  bookings.push(booking);
+
+  saveBookings(bookings);
+}
+
+export function getBookingById(
+  id: string
+): Booking | undefined {
+  return getBookings().find(
+    (booking) => booking.id === id
+  );
+}
+
+export function getCustomerBookings(
+  customerId: string
+): Booking[] {
+  return getBookings().filter(
+    (booking) =>
+      booking.customerId === customerId
+  );
+}
+
+export function getVendorBookings(
+  vendorId: number
+): Booking[] {
+  return getBookings().filter(
+    (booking) =>
+      booking.vendorId === vendorId
+  );
+}
+
+export function updateBookingStatus(
+  bookingId: string,
+  status: BookingStatus
+): void {
+  const bookings = getBookings();
+
+  const booking = bookings.find(
+    (item) => item.id === bookingId
+  );
+
+  if (!booking) {
+    return;
+  }
+
+  booking.bookingStatus = status;
+
+  booking.updatedAt =
+    new Date().toISOString();
+
+  saveBookings(bookings);
+}
+
+export function deleteBooking(
+  bookingId: string
+): void {
+  const bookings = getBookings();
+
+  saveBookings(
+    bookings.filter(
+      (booking) =>
+        booking.id !== bookingId
+    )
+  );
+}
