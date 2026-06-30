@@ -51,6 +51,7 @@ model Vendor {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   bookings  Booking[] 
+  reviews   Review[]
 }
 
 model Category {
@@ -119,17 +120,26 @@ model Booking {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  review Review? 
 }
 model Review {
   id      String  @id @default(uuid())
   rating  Int     @default(5)
   comment String?
+  vendorReply String?
+  updatedAt   DateTime @updatedAt
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
   packageId String
   package   Package @relation(fields: [packageId], references: [id])
+
+  vendorId String
+  vendor   Vendor @relation(fields: [vendorId], references: [id])
+
+  bookingId String? @unique   // optional: enforce "only after completed booking"
+  booking   Booking? @relation(fields: [bookingId], references: [id])
 
   createdAt DateTime @default(now())
 }
