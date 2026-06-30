@@ -1,14 +1,15 @@
 import Link from "next/link";
 import { MapPin } from "lucide-react";
 
-interface VendorInfoProps {
-  id: number;
-  name: string;
-  category: string;
-  city: string;
-  price: number;
-}
+import { Vendor } from "@/types/vendor";
 
+interface VendorInfoProps {
+  id: Vendor["id"];
+  name: Vendor["name"];
+  category: Vendor["category"];
+  city: Vendor["city"];
+  price: Vendor["price"];
+}
 export default function VendorInfo({
   id,
   name,

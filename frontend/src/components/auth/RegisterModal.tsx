@@ -142,11 +142,22 @@ if (!result.success) {
   return;
 }
 
-login(result.user!);
-
 setLoading(false);
 
 closeRegister();
+
+openLogin();
+
+
+setForm({
+  name: "",
+  email: "",
+  phone: "",
+  password: "",
+  confirmPassword: "",
+});
+
+setAgree(false);
 };
 
 

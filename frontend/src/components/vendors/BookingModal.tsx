@@ -6,21 +6,40 @@ import { useEffect, useState } from "react";
 import { X, CheckCircle2 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import BookingSuccess from "./BookingSuccess";
+import { useAuthStore } from "@/store/authStore";
+import { useBookingStore } from "@/store/bookingStore";
+import { Booking } from "@/types/booking";
+
 
 interface BookingModalProps {
   open: boolean;
+
   onClose: () => void;
+
+  vendorId: number;
+
   vendorName: string;
+
+  category: string;
+
+  city: string;
+
   packageName: string;
+
   price: number;
+
   guests: number;
+
   date: string;
 }
 
 export default function BookingModal({
   open,
   onClose,
+  vendorId,
   vendorName,
+  category,
+  city,
   packageName,
   price,
   guests,
@@ -29,6 +48,9 @@ export default function BookingModal({
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [bookingId, setBookingId] = useState("");
+
+  const { user } = useAuthStore();
+const { addBooking } = useBookingStore();
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -50,22 +72,138 @@ export default function BookingModal({
     }
   }, [open]);
 
-  const handleBooking = () => {
+ const handleBooking = () => {
+  if (!user) return;
+
   setLoading(true);
 
   setTimeout(() => {
     setLoading(false);
 
-    const id =
+    const bookingNumber =
       "WD" +
       new Date().getFullYear() +
-      Math.floor(100000 + Math.random() * 900000);
+      Math.floor(
+        100000 + Math.random() * 900000
+      );
 
-    setBookingId(id);
+    setBookingId(bookingNumber);
+
+    // const booking: Booking = {
+
+    //   id: crypto.randomUUID(),
+
+    //   bookingNumber,
+
+    //   customerId: user._id,
+
+    //   vendorId: 0, // We'll replace this with the real vendor id in the next step.
+
+    //   customerName: user.name,
+
+    //   customerEmail: formData.email,
+
+    //   customerPhone: formData.phone,
+
+    //   vendorName,
+
+    //   category: "",
+
+    //   packageName,
+
+    //   eventType: "Wedding",
+
+    //   eventDate: date,
+
+    //   eventTime: "",
+
+    //   venue: "",
+
+    //   city: "",
+
+    //   guests,
+
+    //   brideName: formData.brideName,
+
+    //   groomName: formData.groomName,
+
+    //   specialRequirements:
+    //     formData.requirements,
+
+    //   amount: price,
+
+    //   advancePaid: 0,
+
+    //   remainingAmount: price,
+
+    //   paymentStatus: "pending",
+
+    //   bookingStatus: "pending",
+
+    //   createdAt:
+    //     new Date().toISOString(),
+
+    //   updatedAt:
+    //     new Date().toISOString(),
+    // };
+const booking: Booking = {
+  id: crypto.randomUUID(),
+
+  bookingNumber,
+
+  customerId: user._id,
+
+  vendorId,
+
+  customerName: user.name,
+
+  customerEmail: formData.email,
+
+  customerPhone: formData.phone,
+
+  vendorName,
+
+  category,
+
+  packageName,
+
+  eventType: "Wedding",
+
+  eventDate: date,
+
+  eventTime: "",
+
+  venue: vendorName,
+
+  city,
+
+  guests,
+
+  brideName: formData.brideName,
+
+  groomName: formData.groomName,
+
+  specialRequirements: formData.requirements,
+
+  amount: price,
+
+  advancePaid: 0,
+
+  remainingAmount: price,
+
+  paymentStatus: "pending",
+
+  bookingStatus: "pending",
+
+  createdAt: new Date().toISOString(),
+
+  updatedAt: new Date().toISOString(),
+};
+    addBooking(booking);
+
     setSuccess(true);
   }, 2000);
 };
-
 
 const [formData, setFormData] = useState({
   brideName: "",

@@ -1,76 +1,106 @@
 import { create } from "zustand";
 
-import { Booking } from "@/types/booking";
+import { Booking, BookingStatus } from "@/types/booking";
+
 import {
-  bookings,
-  getBookingById,
-} from "@/data/bookings";
+  getCustomerBookings,
+  getVendorBookings,
+  createBooking,
+  updateBookingStatus,
+  deleteBooking,
+} from "@/services/booking.service";
 
-class BookingService {
-  getBookings() {
-    return bookings;
-  }
-
-  getBooking(id: string) {
-    return getBookingById(id);
-  }
-}
-
-export const bookingService =
-  new BookingService();
 interface BookingStore {
   bookings: Booking[];
 
-  selectedBooking: Booking | null;
-
-  setBookings: (bookings: Booking[]) => void;
-
-  setSelectedBooking: (
-    booking: Booking | null
+  loadCustomerBookings: (
+    customerId: string
   ) => void;
 
-  addBooking: (booking: Booking) => void;
+  loadVendorBookings: (
+    vendorId: number
+  ) => void;
 
-  updateBooking: (booking: Booking) => void;
+  addBooking: (
+    booking: Booking
+  ) => void;
 
-  deleteBooking: (id: string) => void;
+  updateStatus: (
+    bookingId: string,
+    status: BookingStatus
+  ) => void;
+
+  deleteBooking: (
+    bookingId: string
+  ) => void;
 }
 
 export const useBookingStore =
   create<BookingStore>((set) => ({
-   bookings: bookingService.getBookings(),
+    bookings: [],
 
-    selectedBooking: null,
-
-    setBookings: (bookings) =>
-      set({ bookings }),
-
-    setSelectedBooking: (booking) =>
+    loadCustomerBookings: (
+      customerId
+    ) => {
       set({
-        selectedBooking: booking,
-      }),
+        bookings:
+          getCustomerBookings(customerId),
+      });
+    },
 
-    addBooking: (booking) =>
+    loadVendorBookings: (
+      vendorId
+    ) => {
+      set({
+        bookings:
+          getVendorBookings(vendorId),
+      });
+    },
+
+    addBooking: (booking) => {
+      createBooking(booking);
+
       set((state) => ({
         bookings: [
           ...state.bookings,
           booking,
         ],
-      })),
+      }));
+    },
 
-    updateBooking: (booking) =>
-      set((state) => ({
-        bookings: state.bookings.map((item) =>
-          item.id === booking.id
-            ? booking
-            : item
-        ),
-      })),
+    updateStatus: (
+      bookingId,
+      status
+    ) => {
+      updateBookingStatus(
+        bookingId,
+        status
+      );
 
-    deleteBooking: (id) =>
       set((state) => ({
-        bookings: state.bookings.filter(
-          (item) => item.id !== id
+        bookings: state.bookings.map(
+          (booking) =>
+            booking.id === bookingId
+              ? {
+                  ...booking,
+                  bookingStatus: status,
+                }
+              : booking
         ),
-      })),
+      }));
+    },
+
+    deleteBooking: (
+      bookingId
+    ) => {
+      deleteBooking(bookingId);
+
+      set((state) => ({
+        bookings:
+          state.bookings.filter(
+            (booking) =>
+              booking.id !== bookingId
+          ),
+      }));
+    },
   }));

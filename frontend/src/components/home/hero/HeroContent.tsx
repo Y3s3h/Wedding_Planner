@@ -42,7 +42,7 @@ export default function HeroContent() {
 </Link>
 
         <Link
-          href="/register"
+          href="/vendor/register"
           className="rounded-full border border-white/40 bg-white/10 px-8 py-4 text-lg font-semibold backdrop-blur-md transition-all duration-300 hover:bg-white hover:text-black"
         >
           Become a Vendor

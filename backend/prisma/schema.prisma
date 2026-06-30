@@ -32,6 +32,7 @@ model User {
   checklists    Checklist[]
   notifications Notification[]
   guests        Guest[]
+  chatMessages  ChatMessage[]
 }
 
 model Vendor {
@@ -200,5 +201,18 @@ model Notification {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
+  createdAt DateTime @default(now())
+}
+enum ChatRole {
+  USER
+  ASSISTANT
+}
+
+model ChatMessage {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  role      ChatRole
+  content   String
   createdAt DateTime @default(now())
 }

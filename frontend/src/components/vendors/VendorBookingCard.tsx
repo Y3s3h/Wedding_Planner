@@ -1,143 +1,4 @@
-// "use client";
 
-// import { Calendar, MessageCircle } from "lucide-react";
-
-// interface Package {
-//   id: number;
-//   name: string;
-//   price: number;
-// }
-
-// interface VendorBookingCardProps {
-//   packages: Package[];
-// }
-
-// export default function VendorBookingCard({
-//   packages,
-// }: VendorBookingCardProps) {
-//   return (
-//     <aside
-//       className="
-//         sticky
-//         top-28
-//         rounded-3xl
-//         border
-//         border-gray-200
-//         bg-white
-//         p-7
-//         shadow-lg
-//       "
-//     >
-//       <p className="text-sm text-gray-500">
-//         Starting From
-//       </p>
-
-//       <h2 className="mt-2 text-4xl font-bold text-rose-600">
-//         ₹{packages[0].price.toLocaleString("en-IN")}
-//       </h2>
-
-//       <div className="mt-8">
-
-//         <label className="mb-2 block text-sm font-semibold text-gray-700">
-//           Select Package
-//         </label>
-
-//         <select
-//           className="
-//             h-12
-//             w-full
-//             rounded-xl
-//             border
-//             border-gray-300
-//             text-gray-700
-//             px-4
-//             outline-none
-//             transition
-//             focus:border-rose-500
-//           "
-//         >
-//           {packages.map((pkg) => (
-//             <option
-//               key={pkg.id}
-//               value={pkg.id}
-//             >
-//               {pkg.name} — ₹{pkg.price.toLocaleString("en-IN")}
-//             </option>
-//           ))}
-//         </select>
-
-//       </div>
-
-//       <button
-//         className="
-//           mt-8
-//           flex
-//           w-full
-//           items-center
-//           justify-center
-//           gap-2
-//           rounded-xl
-//           bg-gradient-to-r
-//           from-rose-500
-//           to-pink-500
-//           py-4
-//           font-semibold
-//           text-white
-//           shadow-lg
-//           transition
-//           hover:scale-[1.02]
-//         "
-//       >
-//         <Calendar size={20} />
-//         Book Now
-//       </button>
-
-//       <button
-//         className="
-//           mt-4
-//           flex
-//           w-full
-//           items-center
-//           justify-center
-//           gap-2
-//           rounded-xl
-//           border
-//           border-gray-300
-//           py-4
-//           font-semibold
-//           text-gray-700
-//           transition
-//           hover:border-rose-500
-//           hover:text-rose-500
-//         "
-//       >
-//         <MessageCircle size={20} />
-//         Send Inquiry
-//       </button>
-
-//       <div className="mt-8 rounded-2xl bg-rose-50 p-5">
-
-//         <h3 className="font-semibold text-gray-900">
-//           Why Book Here?
-//         </h3>
-
-//         <ul className="mt-4 space-y-3 text-sm text-gray-600">
-
-//           <li>✔ Verified Vendor</li>
-
-//           <li>✔ Instant Booking Support</li>
-
-//           <li>✔ Best Price Guarantee</li>
-
-//           <li>✔ Free Cancellation*</li>
-
-//         </ul>
-
-//       </div>
-
-//     </aside>
-//   );
-// }
 
 
 "use client";
@@ -153,23 +14,35 @@ interface Package {
   price: number;
 }
 
+import { Vendor } from "@/types/vendor";
+
 interface VendorBookingCardProps {
+  vendor: Vendor;
+
   packages: Package[];
 }
     
 export default function VendorBookingCard({
+  vendor,
   packages,
 }: VendorBookingCardProps) {
   const [selectedPackage, setSelectedPackage] = useState(packages[0]);
   const [date, setDate] = useState("");
   const [guests, setGuests] = useState(200);
   const [open, setOpen] = useState(false);
+  
+
   const {
   isAuthenticated,
   openLogin,
+  user,
 } = useAuthStore();
-
+const canBook =
+  !isAuthenticated ||
+  user?.role === "customer";
   return (
+
+    
     <>
     <aside
       className="
@@ -322,7 +195,7 @@ export default function VendorBookingCard({
 
       {/* Buttons */}
 
-      <button  onClick={() => {
+      {/* <button  onClick={() => {
   if (isAuthenticated) {
     setOpen(true);
   } else {
@@ -351,7 +224,42 @@ export default function VendorBookingCard({
       >
         <Calendar size={20} />
         Book Now
-      </button>
+      </button> */}
+
+
+ {canBook && (
+  <button
+    onClick={() => {
+      if (isAuthenticated) {
+        setOpen(true);
+      } else {
+        openLogin();
+      }
+    }}
+    className="
+      mt-8
+      flex
+      w-full
+      items-center
+      justify-center
+      gap-2
+      rounded-xl
+      bg-gradient-to-r
+      from-rose-500
+      to-pink-500
+      py-4
+      font-semibold
+      text-white
+      shadow-lg
+      transition-all
+      duration-300
+      hover:scale-[1.02]
+    "
+  >
+    <Calendar size={20} />
+    Book Now
+  </button>
+)}
 
       <button
         className="
@@ -403,14 +311,17 @@ export default function VendorBookingCard({
     </aside>
 
     <BookingModal
-        open={open}
-        onClose={() => setOpen(false)}
-        vendorName="Royal Palace Jaipur"
-        packageName={selectedPackage.name}
-        price={selectedPackage.price}
-        guests={guests}
-        date={date}
-      />
+  open={open}
+  onClose={() => setOpen(false)}
+  vendorId={vendor.id}
+  vendorName={vendor.name}
+  category={vendor.category}
+  city={vendor.city}
+  packageName={selectedPackage.name}
+  price={selectedPackage.price}
+  guests={guests}
+  date={date}
+/>
     </>
   );
 }

@@ -16,6 +16,10 @@ import { useAuthStore } from "@/store/authStore";
 
 import { loginUser } from "@/services/auth.service";
 
+import { useRouter } from "next/navigation";
+
+import { getDashboardRoute } from "@/lib/auth";
+
 export default function LoginModal() {
   const {
     isLoginOpen,
@@ -25,6 +29,9 @@ export default function LoginModal() {
     login,
   } = useAuthStore();
 
+
+
+    const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [remember, setRemember] = useState(false);
@@ -48,48 +55,7 @@ export default function LoginModal() {
     return () => window.removeEventListener("keydown", handleEsc);
   }, [closeLogin]);
 
-  // const handleLogin = () => {
-  //   const newErrors = {
-  //     email: "",
-  //     password: "",
-  //   };
-
-  //   if (!email.trim()) {
-  //     newErrors.email = "Email is required.";
-  //   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-  //     newErrors.email = "Enter a valid email.";
-  //   }
-
-  //   if (!password) {
-  //     newErrors.password = "Password is required.";
-  //   }
-
-  //   setErrors(newErrors);
-
-  //   if (Object.values(newErrors).some(Boolean)) {
-  //     return;
-  //   }
-
-  //   setLoading(true);
-
-  //   setTimeout(() => {
-  //     login({
-  //       _id: "1",
-  //       name: "Yash Yadav",
-  //       email,
-  //       phone: "9876543210",
-  //       avatar: "",
-  //       role: "customer",
-  //       isVerified: true,
-  //       createdAt: new Date().toISOString(),
-  //       updatedAt: new Date().toISOString(),
-  //     });
-
-  //     setLoading(false);
-  //     closeLogin();
-  //   }, 1500);
-  // };
-
+  
 
   const handleLogin = () => {
   const newErrors = {
@@ -132,9 +98,15 @@ export default function LoginModal() {
 
   login(result.user!);
 
-  setLoading(false);
+const dashboard = getDashboardRoute(
+  result.user!.role
+);
 
-  closeLogin();
+setLoading(false);
+
+closeLogin();
+
+router.push(dashboard);
 };
   return (
     <AnimatePresence>

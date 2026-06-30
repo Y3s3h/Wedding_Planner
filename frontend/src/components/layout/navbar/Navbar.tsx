@@ -10,6 +10,8 @@ import MobileNavigation from "./MobileNavigation";
 import CTAButton from "./CTAButton";
 import { useAuthStore } from "@/store/authStore";
 
+import Link from "next/link";
+
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 
@@ -52,25 +54,42 @@ export default function Navbar() {
 
         <div className="hidden items-center gap-5 lg:flex">
           {isAuthenticated ? (
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-rose-500 font-bold text-white">
-                {user?.name?.charAt(0).toUpperCase()}
-              </div>
+  <div className="flex items-center gap-5">
+    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-rose-500 font-bold text-white">
+      {user?.name?.charAt(0).toUpperCase()}
+    </div>
 
-              <div>
-                <p className="font-semibold text-white">
-                  {user?.name}
-                </p>
+    <div>
+      <p className="font-semibold text-white">
+        {user?.name}
+      </p>
 
-                <button
-                  onClick={logout}
-                  className="text-sm text-gray-300 transition hover:text-rose-400"
-                >
-                  Logout
-                </button>
-              </div>
-            </div>
-          ) : (
+      <p className="text-xs text-gray-300 capitalize">
+        {user?.role}
+      </p>
+    </div>
+
+    <Link
+      href={
+        user?.role === "vendor"
+          ? "/vendor"
+          : "/customer"
+      }
+      className="rounded-full border border-white/20 px-5 py-2 text-sm font-medium text-white transition hover:bg-white/10"
+    >
+      {user?.role === "vendor"
+        ? "Vendor Dashboard"
+        : "Dashboard"}
+    </Link>
+
+    <button
+      onClick={logout}
+      className="rounded-full bg-rose-500 px-5 py-2 text-sm font-medium text-white transition hover:bg-rose-600"
+    >
+      Logout
+    </button>
+  </div>
+) : (
             <button
               onClick={openLogin}
               className="rounded-full bg-rose-500 px-6 py-2 font-semibold text-white transition hover:bg-rose-600"

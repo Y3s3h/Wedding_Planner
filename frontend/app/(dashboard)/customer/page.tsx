@@ -7,6 +7,7 @@ import InsightsSection from "@/components/dashboard/sections/InsightsSection";
 
 import UpcomingBookings from "@/components/dashboard/widgets/UpcomingBookings";
 import BudgetOverview from "@/components/dashboard/widgets/BudgetOverview";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 import {
   Search,
@@ -23,7 +24,10 @@ import {
 } from "lucide-react";
 
 export default function CustomerDashboardPage() {
+  
+
   return (
+     <ProtectedRoute role="customer">
     <div className="space-y-8">
 
       <WelcomeHero />
@@ -140,5 +144,8 @@ export default function CustomerDashboardPage() {
 </section>
 
     </div>
+
+    </ProtectedRoute>
   );
+
 }

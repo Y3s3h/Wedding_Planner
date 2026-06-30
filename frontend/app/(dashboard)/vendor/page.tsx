@@ -8,6 +8,7 @@ import PerformanceSection from "@/components/vendor/dashboard/PerformanceSection
 import RevenueOverview from "@/components/vendor/dashboard/RevenueOverview";
 import UpcomingBookings from "@/components/vendor/dashboard/UpcomingBookings";
 import RecentReviews from "@/components/vendor/dashboard/RecentReviews";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 import {
   CalendarCheck2,
@@ -22,6 +23,7 @@ import {
 
 export default function VendorDashboardPage() {
   return (
+<ProtectedRoute role="vendor">
     <div className="space-y-8">
 
       <VendorHero />
@@ -119,5 +121,7 @@ export default function VendorDashboardPage() {
       <RecentReviews />
 
     </div>
+    </ProtectedRoute>
+
   );
 }

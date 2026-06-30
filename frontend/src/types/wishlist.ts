@@ -3,7 +3,7 @@ export interface WishlistItem {
 
   customerId: string;
 
-  vendorId: string;
+  vendorId: number;
 
   vendorName: string;
 

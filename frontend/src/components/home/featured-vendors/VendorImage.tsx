@@ -1,27 +1,30 @@
+"use client";
+
 import Image from "next/image";
-import { Heart, Star, BadgeCheck } from "lucide-react";
+import { BadgeCheck } from "lucide-react";
+
+import { Vendor } from "@/types/vendor";
+
+import WishlistButton from "./WishlistButton";
+import { useWishlist } from "@/hooks/useWishlist";
 
 interface VendorImageProps {
-  image: string;
-  name: string;
-  rating: number;
-  reviews: number;
-  featured: boolean;
+  vendor: Vendor;
 }
 
 export default function VendorImage({
-  image,
-  name,
-  rating,
-  reviews,
-  featured,
+  vendor,
 }: VendorImageProps) {
+  const {
+    isWishlisted,
+    handleToggleWishlist,
+  } = useWishlist(vendor);
+
   return (
     <div className="relative h-60 overflow-hidden rounded-t-3xl">
-
       <Image
-        src={image}
-        alt={name}
+        src={vendor.image}
+        alt={vendor.name}
         fill
         sizes="(max-width:640px)100vw,
                (max-width:1024px)50vw,
@@ -31,33 +34,26 @@ export default function VendorImage({
       />
 
       {/* Dark Overlay */}
-
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
 
       {/* Wishlist */}
-
-      <button className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/90 shadow-lg backdrop-blur transition-all duration-300 hover:scale-110">
-        <Heart
-          size={20}
-          className="text-rose-500"
-        />
-      </button>
+      <WishlistButton
+        isWishlisted={isWishlisted}
+        onClick={handleToggleWishlist}
+      />
 
       {/* Rating */}
-
-      <div className="absolute bottom-4 right-4 rounded-full bg-white/90 px-3 py-1 text-sm text-gray-700 font-semibold backdrop-blur">
-        ⭐ {rating} ({reviews})
+      <div className="absolute bottom-4 right-4 rounded-full bg-white/90 px-3 py-1 text-sm font-semibold text-gray-700 backdrop-blur">
+        ⭐ {vendor.rating} ({vendor.reviews})
       </div>
 
       {/* Featured */}
-
-      {featured && (
+      {vendor.featured && (
         <div className="absolute bottom-4 left-4 flex items-center gap-2 rounded-full bg-emerald-500 px-3 py-1 text-xs font-semibold text-white shadow-lg">
           <BadgeCheck size={16} />
           Featured
         </div>
       )}
-
     </div>
   );
 }

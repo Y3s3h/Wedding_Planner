@@ -1,152 +1,152 @@
-import { Booking } from "@/types/booking";
+// import { Booking } from "@/types/booking";
 
-export const bookings: Booking[] = [
-  {
-    id: "BK001",
+// export const bookings: Booking[] = [
+//   {
+//     id: "BK001",
 
-    customerId: "CUS001",
-    vendorId: "VEN001",
+//     customerId: "CUS001",
+//     vendorId: "VEN001",
 
-    customerName: "Rahul Sharma",
-    vendorName: "Royal Photography",
+//     customerName: "Rahul Sharma",
+//     vendorName: "Royal Photography",
 
-    serviceId: "SER001",
-    serviceName: "Wedding Photography",
+//     serviceId: "SER001",
+//     serviceName: "Wedding Photography",
 
-    eventType: "Wedding",
+//     eventType: "Wedding",
 
-    eventDate: "2027-02-12",
+//     eventDate: "2027-02-12",
 
-    eventTime: "11:00 AM",
+//     eventTime: "11:00 AM",
 
-    venue: "Royal Palace",
+//     venue: "Royal Palace",
 
-    city: "Delhi",
+//     city: "Delhi",
 
-    guests: 350,
+//     guests: 350,
 
-    amount: 120000,
+//     amount: 120000,
 
-    advancePaid: 50000,
+//     advancePaid: 50000,
 
-    remainingAmount: 70000,
+//     remainingAmount: 70000,
 
-    paymentStatus: "partial",
+//     paymentStatus: "partial",
 
-    bookingStatus: "accepted",
+//     bookingStatus: "accepted",
 
-    createdAt: "2026-08-01",
+//     createdAt: "2026-08-01",
 
-    updatedAt: "2026-08-03",
-  },
+//     updatedAt: "2026-08-03",
+//   },
 
-  {
-    id: "BK002",
+//   {
+//     id: "BK002",
 
-    customerId: "CUS002",
-    vendorId: "VEN001",
+//     customerId: "CUS002",
+//     vendorId: "VEN001",
 
-    customerName: "Priya Singh",
-    vendorName: "Royal Photography",
+//     customerName: "Priya Singh",
+//     vendorName: "Royal Photography",
 
-    serviceId: "SER001",
-    serviceName: "Wedding Photography",
+//     serviceId: "SER001",
+//     serviceName: "Wedding Photography",
 
-    eventType: "Reception",
+//     eventType: "Reception",
 
-    eventDate: "2027-03-04",
+//     eventDate: "2027-03-04",
 
-    eventTime: "07:00 PM",
+//     eventTime: "07:00 PM",
 
-    venue: "Grand Ballroom",
+//     venue: "Grand Ballroom",
 
-    city: "Noida",
+//     city: "Noida",
 
-    guests: 250,
+//     guests: 250,
 
-    amount: 80000,
+//     amount: 80000,
 
-    advancePaid: 80000,
+//     advancePaid: 80000,
 
-    remainingAmount: 0,
+//     remainingAmount: 0,
 
-    paymentStatus: "paid",
+//     paymentStatus: "paid",
 
-    bookingStatus: "completed",
+//     bookingStatus: "completed",
 
-    createdAt: "2026-08-08",
+//     createdAt: "2026-08-08",
 
-    updatedAt: "2026-08-10",
-  },
+//     updatedAt: "2026-08-10",
+//   },
 
-  {
-    id: "BK003",
+//   {
+//     id: "BK003",
 
-    customerId: "CUS003",
-    vendorId: "VEN002",
+//     customerId: "CUS003",
+//     vendorId: "VEN002",
 
-    customerName: "Aman Verma",
-    vendorName: "Dream Decor",
+//     customerName: "Aman Verma",
+//     vendorName: "Dream Decor",
 
-    serviceId: "SER002",
-    serviceName: "Decoration",
+//     serviceId: "SER002",
+//     serviceName: "Decoration",
 
-    eventType: "Engagement",
+//     eventType: "Engagement",
 
-    eventDate: "2027-01-18",
+//     eventDate: "2027-01-18",
 
-    eventTime: "06:00 PM",
+//     eventTime: "06:00 PM",
 
-    venue: "City Banquet",
+//     venue: "City Banquet",
 
-    city: "Lucknow",
+//     city: "Lucknow",
 
-    guests: 180,
+//     guests: 180,
 
-    amount: 60000,
+//     amount: 60000,
 
-    advancePaid: 15000,
+//     advancePaid: 15000,
 
-    remainingAmount: 45000,
+//     remainingAmount: 45000,
 
-    paymentStatus: "partial",
+//     paymentStatus: "partial",
 
-    bookingStatus: "pending",
+//     bookingStatus: "pending",
 
-    createdAt: "2026-08-11",
+//     createdAt: "2026-08-11",
 
-    updatedAt: "2026-08-11",
-  },
-];
+//     updatedAt: "2026-08-11",
+//   },
+// ];
 
 
-// Get every booking
-export const getBookings = () => bookings;
+// // Get every booking
+// export const getBookings = () => bookings;
 
-// Get booking by id
-export const getBookingById = (id: string) =>
-  bookings.find((booking) => booking.id === id);
+// // Get booking by id
+// export const getBookingById = (id: string) =>
+//   bookings.find((booking) => booking.id === id);
 
-// Customer bookings
-export const getCustomerBookings = (customerId: string) =>
-  bookings.filter(
-    (booking) => booking.customerId === customerId
-  );
+// // Customer bookings
+// export const getCustomerBookings = (customerId: string) =>
+//   bookings.filter(
+//     (booking) => booking.customerId === customerId
+//   );
 
-// Vendor bookings
-export const getVendorBookings = (vendorId: string) =>
-  bookings.filter(
-    (booking) => booking.vendorId === vendorId
-  );
+// // Vendor bookings
+// export const getVendorBookings = (vendorId: string) =>
+//   bookings.filter(
+//     (booking) => booking.vendorId === vendorId
+//   );
 
-// Pending bookings
-export const getPendingBookings = () =>
-  bookings.filter(
-    (booking) => booking.bookingStatus === "pending"
-  );
+// // Pending bookings
+// export const getPendingBookings = () =>
+//   bookings.filter(
+//     (booking) => booking.bookingStatus === "pending"
+//   );
 
-// Completed bookings
-export const getCompletedBookings = () =>
-  bookings.filter(
-    (booking) => booking.bookingStatus === "completed"
-  );
+// // Completed bookings
+// export const getCompletedBookings = () =>
+//   bookings.filter(
+//     (booking) => booking.bookingStatus === "completed"
+//   );
