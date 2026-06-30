@@ -13,6 +13,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { PackagesModule } from './packages/packages.module';
 
 import { VendorModule } from './vendor/vendor.module';
+import { BookingsModule } from './bookings/bookings.module';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { VendorModule } from './vendor/vendor.module';
     VendorModule,
     ChatbotModule,
     CategoriesModule, 
-     PackagesModule,
+     PackagesModule, BookingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
