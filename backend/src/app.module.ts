@@ -13,9 +13,13 @@ import { CategoriesModule } from './categories/categories.module';
 import { PackagesModule } from './packages/packages.module';
 
 import { VendorModule } from './vendor/vendor.module';
+<<<<<<< HEAD
 import { PaymentModule } from './payment/payment.module';
 
 
+=======
+import { BookingsModule } from './bookings/bookings.module';
+>>>>>>> 07f40107b02a4d9afbf5d8531ca259b1b44ae08c
 
 @Module({
   imports: [
@@ -30,6 +34,7 @@ import { PaymentModule } from './payment/payment.module';
     ChatbotModule,
     CategoriesModule, 
      PackagesModule, PaymentModule,
+     PackagesModule, BookingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

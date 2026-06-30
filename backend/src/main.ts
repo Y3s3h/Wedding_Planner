@@ -6,13 +6,9 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Enable CORS
   app.enableCors();
-
-  // Global API Prefix
   app.setGlobalPrefix('api/v1');
 
-  // Global Validation
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -20,19 +16,18 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
   const config = new DocumentBuilder()
-  .setTitle('Wedding Planner API')
-  .setDescription('API Documentation for Wedding Planner')
-  .setVersion('1.0')
-  .addBearerAuth()
-  .build();
+    .setTitle('Wedding Planner API')
+    .setDescription('API Documentation for Wedding Planner')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
 
-const document = SwaggerModule.createDocument(app, config);
-
-SwaggerModule.setup('api', app, document);
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
 
   await app.listen(process.env.PORT ?? 3000);
-
   console.log(`🚀 Server running on http://localhost:${process.env.PORT ?? 3000}/api/v1`);
 }
 
