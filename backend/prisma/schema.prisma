@@ -39,6 +39,8 @@ model Vendor {
   businessName String
   description  String?
   address      String?
+  logoUrl      String?
+  coverImage   String?
 
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)

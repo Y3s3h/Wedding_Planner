@@ -7,25 +7,28 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
+import { SearchVendorDto } from './dto/search-vendor.dto';
+
+import { Role } from '@prisma/client';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
 export class VendorService {
 
   constructor(
     private readonly prisma: PrismaService,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async createVendor(
   userId: string,
   createVendorDto: CreateVendorDto,
 ) {
-
-  const existingVendor =
-    await this.prisma.vendor.findUnique({
-      where: {
-        userId,
-      },
-    });
+  const existingVendor = await this.prisma.vendor.findUnique({
+    where: {
+      userId,
+    },
+  });
 
   if (existingVendor) {
     throw new BadRequestException(
@@ -33,6 +36,7 @@ export class VendorService {
     );
   }
 
+  // Create Vendor Profile
   const vendor = await this.prisma.vendor.create({
     data: {
       businessName: createVendorDto.businessName,
@@ -40,6 +44,16 @@ export class VendorService {
       address: createVendorDto.address,
       categoryId: createVendorDto.categoryId,
       userId,
+    },
+  });
+
+  // Update User Role to VENDOR
+  await this.prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      role: Role.VENDOR,
     },
   });
 
@@ -167,6 +181,159 @@ async getVendorById(id: string) {
   return {
     success: true,
     data: vendor,
+  };
+}
+
+async searchVendors(searchVendorDto: SearchVendorDto) {
+
+  const page = Number(searchVendorDto.page) || 1;
+  const limit = Number(searchVendorDto.limit) || 10;
+
+  const vendors = await this.prisma.vendor.findMany({
+
+    where: {
+
+      ...(searchVendorDto.search && {
+        businessName: {
+          contains: searchVendorDto.search,
+          mode: 'insensitive',
+        },
+      }),
+
+      ...(searchVendorDto.city && {
+        address: {
+          contains: searchVendorDto.city,
+          mode: 'insensitive',
+        },
+      }),
+
+    },
+
+    include: {
+      category: true,
+    },
+
+    skip: (page - 1) * limit,
+
+    take: limit,
+
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+
+  return {
+    success: true,
+    page,
+    limit,
+    count: vendors.length,
+    data: vendors,
+  };
+}
+async getDashboard(userId: string) {
+
+  const vendor = await this.prisma.vendor.findUnique({
+    where: {
+      userId,
+    },
+  });
+
+  if (!vendor) {
+    throw new BadRequestException(
+      'Vendor profile not found',
+    );
+  }
+
+  const totalPackages = await this.prisma.package.count({
+    where: {
+      vendorId: vendor.id,
+    },
+  });
+
+  const totalBookings = await this.prisma.booking.count({
+    where: {
+      package: {
+        vendorId: vendor.id,
+      },
+    },
+  });
+
+  const pendingBookings = await this.prisma.booking.count({
+    where: {
+      package: {
+        vendorId: vendor.id,
+      },
+      status: 'PENDING',
+    },
+  });
+
+  const confirmedBookings = await this.prisma.booking.count({
+    where: {
+      package: {
+        vendorId: vendor.id,
+      },
+      status: 'CONFIRMED',
+    },
+  });
+
+  const cancelledBookings = await this.prisma.booking.count({
+    where: {
+      package: {
+        vendorId: vendor.id,
+      },
+      status: 'CANCELLED',
+    },
+  });
+
+  return {
+    success: true,
+    data: {
+      totalPackages,
+      totalBookings,
+      pendingBookings,
+      confirmedBookings,
+      cancelledBookings,
+      totalRevenue: 0,
+      averageRating: 0,
+    },
+  };
+}
+
+async uploadVendorLogo(
+  userId: string,
+  file: Express.Multer.File,
+) {
+
+  const vendor = await this.prisma.vendor.findUnique({
+    where: {
+      userId,
+    },
+  });
+
+  if (!vendor) {
+    throw new BadRequestException(
+      'Vendor profile not found',
+    );
+  }
+
+  const uploadedImage: any =
+    await this.cloudinaryService.uploadImage(file);
+
+  const updatedVendor =
+    await this.prisma.vendor.update({
+      where: {
+        userId,
+      },
+      data: {
+        logoUrl: uploadedImage.secure_url,
+      },
+    });
+
+  return {
+    success: true,
+    message: 'Logo uploaded successfully',
+    image: uploadedImage.secure_url,
+    data: updatedVendor,
   };
 }
 }
