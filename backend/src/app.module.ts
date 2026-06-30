@@ -15,6 +15,8 @@ import { PackagesModule } from './packages/packages.module';
 import { VendorModule } from './vendor/vendor.module';
 import { BookingsModule } from './bookings/bookings.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { BudgetsModule } from './budgets/budgets.module';
+import { ExpensesModule } from './expenses/expenses.module';
 
 @Module({
   imports: [
@@ -28,7 +30,7 @@ import { ReviewsModule } from './reviews/reviews.module';
     VendorModule,
     ChatbotModule,
     CategoriesModule, 
-     PackagesModule, BookingsModule, ReviewsModule,
+     PackagesModule, BookingsModule, ReviewsModule, BudgetsModule, ExpensesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
