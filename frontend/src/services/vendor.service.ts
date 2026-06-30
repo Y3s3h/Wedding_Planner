@@ -18,6 +18,10 @@ export type StoredVendor = VendorRegistrationForm & {
 };
 
 export function getVendors(): StoredVendor[] {
+  if (typeof window === "undefined") {
+    return [];
+  }
+
   const vendors = localStorage.getItem(STORAGE_KEY);
 
   if (!vendors) {
@@ -26,6 +30,10 @@ export function getVendors(): StoredVendor[] {
 
   return JSON.parse(vendors);
 }
+
+
+
+
 
 export function saveVendors(
   vendors: StoredVendor[]

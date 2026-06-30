@@ -7,30 +7,52 @@ import { useState } from "react";
 import { Calendar, MessageCircle, Users } from "lucide-react";
 import BookingModal from "./BookingModal";
 import { useAuthStore } from "@/store/authStore";
-
-interface Package {
-  id: number;
-  name: string;
-  price: number;
-}
+import { getVendorServices } from "@/services/service.service";
 
 import { Vendor } from "@/types/vendor";
 
 interface VendorBookingCardProps {
   vendor: Vendor;
-
-  packages: Package[];
 }
     
 export default function VendorBookingCard({
   vendor,
-  packages,
 }: VendorBookingCardProps) {
-  const [selectedPackage, setSelectedPackage] = useState(packages[0]);
+
+
+  const packages = getVendorServices(vendor.id).map(
+  (service, index) => ({
+    id: index + 1,
+    name: service.name,
+    price: service.price,
+  })
+);
+  const [selectedPackage, setSelectedPackage] = useState(
+  () => packages[0]
+);
   const [date, setDate] = useState("");
   const [guests, setGuests] = useState(200);
   const [open, setOpen] = useState(false);
+
   
+    
+
+
+if (packages.length === 0) {
+  return (
+    <aside className="rounded-3xl border border-slate-200 bg-white p-8 shadow-xl">
+
+      <h2 className="text-2xl font-bold text-slate-900">
+        No Services Available
+      </h2>
+
+      <p className="mt-3 text-slate-500">
+        This vendor hasn't added any services yet.
+      </p>
+
+    </aside>
+  );
+}
 
   const {
   isAuthenticated,
@@ -195,37 +217,7 @@ const canBook =
 
       {/* Buttons */}
 
-      {/* <button  onClick={() => {
-  if (isAuthenticated) {
-    setOpen(true);
-  } else {
-    openLogin();
-  }
-}}
-        className="
-          mt-8
-          flex
-          w-full
-          items-center
-          justify-center
-          gap-2
-          rounded-xl
-          bg-gradient-to-r
-          from-rose-500
-          to-pink-500
-          py-4
-          font-semibold
-          text-white
-          shadow-lg
-          transition-all
-          duration-300
-          hover:scale-[1.02]
-        "
-      >
-        <Calendar size={20} />
-        Book Now
-      </button> */}
-
+     
 
  {canBook && (
   <button

@@ -7,3 +7,5 @@ export * from "./customerStore";
 export * from "./messageStore";
 
 export * from "./uiStore";
+
+export * from "./portfolioStore";
