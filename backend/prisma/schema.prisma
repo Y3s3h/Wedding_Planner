@@ -52,6 +52,17 @@ model Vendor {
   packages  Package[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  gallery VendorGallery[]
+}
+
+model VendorGallery {
+  id        String   @id @default(uuid())
+  imageUrl  String
+
+  vendorId  String
+  vendor    Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
 }
 
 model Category {
@@ -81,6 +92,7 @@ model Package {
   reviews   Review[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  inclusions String[]
 }
 
 enum BookingStatus {

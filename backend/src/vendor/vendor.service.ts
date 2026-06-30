@@ -336,4 +336,163 @@ async uploadVendorLogo(
     data: updatedVendor,
   };
 }
+async uploadVendorCover(
+  userId: string,
+  file: Express.Multer.File,
+) {
+
+  const vendor = await this.prisma.vendor.findUnique({
+    where: {
+      userId,
+    },
+  });
+
+  if (!vendor) {
+    throw new BadRequestException(
+      'Vendor profile not found',
+    );
+  }
+
+  const uploaded: any =
+    await this.cloudinaryService.uploadImage(file);
+
+  const updatedVendor =
+    await this.prisma.vendor.update({
+      where: {
+        userId,
+      },
+      data: {
+        coverImage: uploaded.secure_url,
+      },
+    });
+
+  return {
+    success: true,
+    message: 'Cover image uploaded successfully',
+    coverImage: updatedVendor.coverImage,
+  };
+}
+
+async uploadGallery(
+  userId: string,
+  files: Express.Multer.File[],
+) {
+
+  // Check Vendor Exists
+  const vendor = await this.prisma.vendor.findUnique({
+    where: {
+      userId,
+    },
+  });
+
+  if (!vendor) {
+    throw new BadRequestException(
+      'Vendor profile not found',
+    );
+  }
+
+  if (!files || files.length === 0) {
+    throw new BadRequestException(
+      'Please upload at least one image',
+    );
+  }
+
+  const uploadedImages: any[] = [];
+
+  for (const file of files) {
+
+    const uploaded: any =
+      await this.cloudinaryService.uploadImage(file);
+
+    const gallery =
+      await this.prisma.vendorGallery.create({
+        data: {
+          imageUrl: uploaded.secure_url,
+          vendorId: vendor.id,
+        },
+      });
+
+    uploadedImages.push(gallery);
+  }
+
+  return {
+    success: true,
+    message: 'Gallery uploaded successfully',
+    count: uploadedImages.length,
+    data: uploadedImages,
+  };
+}
+
+async getGallery(userId: string) {
+
+  const vendor = await this.prisma.vendor.findUnique({
+    where: {
+      userId,
+    },
+  });
+
+  if (!vendor) {
+    throw new BadRequestException(
+      'Vendor profile not found',
+    );
+  }
+
+  const gallery = await this.prisma.vendorGallery.findMany({
+    where: {
+      vendorId: vendor.id,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+
+  return {
+    success: true,
+    count: gallery.length,
+    data: gallery,
+  };
+}
+
+async deleteGalleryImage(
+  userId: string,
+  imageId: string,
+) {
+
+  const vendor = await this.prisma.vendor.findUnique({
+    where: {
+      userId,
+    },
+  });
+
+  if (!vendor) {
+    throw new BadRequestException(
+      'Vendor profile not found',
+    );
+  }
+
+  const image = await this.prisma.vendorGallery.findUnique({
+    where: {
+      id: imageId,
+    },
+  });
+
+  if (!image || image.vendorId !== vendor.id) {
+    throw new NotFoundException(
+      'Gallery image not found',
+    );
+  }
+
+  await this.prisma.vendorGallery.delete({
+    where: {
+      id: imageId,
+    },
+  });
+
+  return {
+    success: true,
+    message: 'Gallery image deleted successfully',
+  };
+}
+
+
 }

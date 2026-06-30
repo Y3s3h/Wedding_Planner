@@ -13,6 +13,9 @@ import { CategoriesModule } from './categories/categories.module';
 import { PackagesModule } from './packages/packages.module';
 
 import { VendorModule } from './vendor/vendor.module';
+import { PaymentModule } from './payment/payment.module';
+
+
 
 @Module({
   imports: [
@@ -26,7 +29,7 @@ import { VendorModule } from './vendor/vendor.module';
     VendorModule,
     ChatbotModule,
     CategoriesModule, 
-     PackagesModule,
+     PackagesModule, PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

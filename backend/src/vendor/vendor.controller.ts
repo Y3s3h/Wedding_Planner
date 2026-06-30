@@ -8,9 +8,11 @@ import {
   Param,
   UploadedFile,
   UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags,ApiConsumes,
+  ApiBody, } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateVendorDto } from './dto/create-vendor.dto';
@@ -21,6 +23,9 @@ import { UpdateVendorDto } from './dto/update-vendor.dto';
 import { Query } from '@nestjs/common';
 import { SearchVendorDto } from './dto/search-vendor.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { Delete } from '@nestjs/common';
+
 
 @ApiTags('Vendor')
 @ApiBearerAuth()
@@ -95,6 +100,18 @@ async getVendorById(
 @Post('upload-logo')
 @UseGuards(JwtAuthGuard)
 @UseInterceptors(FileInterceptor('image'))
+@ApiConsumes('multipart/form-data')
+@ApiBody({
+  schema: {
+    type: 'object',
+    properties: {
+      image: {
+        type: 'string',
+        format: 'binary',
+      },
+    },
+  },
+})
 async uploadVendorLogo(
   @Req() req: any,
   @UploadedFile() file: Express.Multer.File,
@@ -102,6 +119,51 @@ async uploadVendorLogo(
   return this.vendorService.uploadVendorLogo(
     req.user.sub,
     file,
+  );
+}
+@Post('upload-cover')
+@UseGuards(JwtAuthGuard)
+@UseInterceptors(FileInterceptor('image'))
+async uploadVendorCover(
+  @Req() req: any,
+  @UploadedFile() file: Express.Multer.File,
+) {
+  return this.vendorService.uploadVendorCover(
+    req.user.sub,
+    file,
+  );
+}
+@Post('gallery')
+@UseGuards(JwtAuthGuard)
+@UseInterceptors(FilesInterceptor('images', 10))
+async uploadGallery(
+  @Req() req: any,
+  @UploadedFiles() files: Express.Multer.File[],
+) {
+  return this.vendorService.uploadGallery(
+    req.user.sub,
+    files,
+  );
+}
+@Get('gallery')
+@UseGuards(JwtAuthGuard)
+async getGallery(
+  @Req() req: any,
+) {
+  return this.vendorService.getGallery(
+    req.user.sub,
+  );
+}
+
+@Delete('gallery/:id')
+@UseGuards(JwtAuthGuard)
+async deleteGalleryImage(
+  @Req() req: any,
+  @Param('id') id: string,
+) {
+  return this.vendorService.deleteGalleryImage(
+    req.user.sub,
+    id,
   );
 }
 }

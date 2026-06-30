@@ -18,7 +18,7 @@ export class PackagesService {
         price: dto.price,
         categoryId: dto.categoryId,
         vendorId: vendor.id,
-        inclusions: dto.inclusions ?? [],
+        //inclusions: dto.inclusions ?? [],
       },
       include: { category: true, vendor: true },
     });
