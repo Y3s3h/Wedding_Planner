@@ -2,7 +2,13 @@
 
 import { Plus } from "lucide-react";
 
-export default function AddServiceCard() {
+interface AddServiceCardProps {
+  onCreate: () => void;
+}
+
+export default function AddServiceCard({
+  onCreate,
+}: AddServiceCardProps) {
   return (
     <section className="rounded-3xl border-2 border-dashed border-blue-300 bg-blue-50 p-12 text-center">
 
@@ -24,10 +30,11 @@ export default function AddServiceCard() {
         description, gallery and availability.
       </p>
 
-      <button className="mt-8 rounded-2xl bg-blue-700 px-8 py-4 font-semibold text-white transition hover:bg-blue-800">
-
+      <button
+        onClick={onCreate}
+        className="mt-8 rounded-2xl bg-blue-700 px-8 py-4 font-semibold text-white transition hover:bg-blue-800"
+      >
         Create Service
-
       </button>
 
     </section>

@@ -1,3 +1,5 @@
+
+
 export type ServiceStatus =
   | "active"
   | "inactive"
@@ -6,13 +8,15 @@ export type ServiceStatus =
 export interface Service {
   id: string;
 
-  vendorId: string;
+  vendorId: number;
 
   name: string;
 
   category: string;
 
   description: string;
+
+  duration: string;
 
   price: number;
 
@@ -21,6 +25,8 @@ export interface Service {
   reviews: number;
 
   image: string;
+
+  includes: string[];
 
   status: ServiceStatus;
 
