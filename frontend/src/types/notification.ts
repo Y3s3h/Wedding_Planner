@@ -1,3 +1,9 @@
+export type NotificationType =
+  | "booking"
+  | "message"
+  | "review"
+  | "system";
+
 export interface Notification {
   id: string;
 
@@ -7,11 +13,9 @@ export interface Notification {
 
   message: string;
 
-  type:
-    | "booking"
-    | "message"
-    | "review"
-    | "system";
+  type: NotificationType;
+
+  link?: string;
 
   isRead: boolean;
 

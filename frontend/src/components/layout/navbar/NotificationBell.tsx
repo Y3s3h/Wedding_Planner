@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Bell } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import { useAuthStore } from "@/store/authStore";
 import { useNotificationStore } from "@/store/notificationStore";
@@ -10,6 +11,8 @@ export default function NotificationBell() {
   const [open, setOpen] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const router = useRouter();
 
   const { user } = useAuthStore();
 
@@ -44,16 +47,22 @@ export default function NotificationBell() {
 
   if (!user) return null;
 
-  const userNotifications = notifications.filter(
-    (notification) =>
-      notification.userId === user._id
-  );
+  const userNotifications = useMemo(() => {
+    return notifications
+      .filter(
+        (notification) =>
+          notification.userId === user._id
+      )
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() -
+          new Date(a.createdAt).getTime()
+      );
+  }, [notifications, user]);
 
-  const unreadCount =
-    userNotifications.filter(
-      (notification) =>
-        !notification.isRead
-    ).length;
+  const unreadCount = userNotifications.filter(
+    (notification) => !notification.isRead
+  ).length;
 
   return (
     <div
@@ -62,23 +71,25 @@ export default function NotificationBell() {
     >
       {/* Bell */}
 
-      <button
+      {/* <button
         onClick={() => setOpen(!open)}
         className="
           relative
           flex
           h-11
           w-11
+          shrink-0
           items-center
           justify-center
           rounded-2xl
           transition-all
           duration-300
+          hover:bg-rose-50
           hover:text-rose-500
         "
       >
         <Bell
-          size={23}
+          size={22}
           className="text-gray-700"
         />
 
@@ -86,24 +97,80 @@ export default function NotificationBell() {
           <span
             className="
               absolute
-              -right-1
+              -right-2
               -top-1
+              z-20
               flex
               h-5
-              w-5
+              min-w-[20px]
               items-center
               justify-center
               rounded-full
+              border-2
+              border-white
               bg-rose-500
+              px-1
               text-[10px]
               font-bold
+              leading-none
               text-white
+              shadow
             "
           >
-            {unreadCount}
+            {unreadCount > 99
+              ? "99+"
+              : unreadCount}
           </span>
         )}
-      </button>
+      </button> */}
+
+
+
+      <button
+  onClick={() => setOpen(!open)}
+  className="
+    relative
+    flex h-11 w-11
+    items-center justify-center
+    rounded-xl
+    bg-rose-100
+    border border-slate-200
+    shadow-sm
+    transition
+    hover:shadow-md
+    hover:bg-slate-50
+  "
+>
+  <Bell
+    size={20}
+    className="text-slate-700"
+  />
+
+  {unreadCount > 0 && (
+    <span
+      className="
+        absolute
+        -top-1
+        -right-1
+        flex
+        min-w-[18px]
+        h-[18px]
+        items-center
+        justify-center
+        rounded-full
+       
+        text-[10px]
+        font-bold
+        text-rose-700
+        ring-2
+        bg-white
+        ring-white
+      "
+    >
+      {unreadCount > 9 ? "9+" : unreadCount}
+    </span>
+  )}
+</button>
 
       {/* Dropdown */}
 
@@ -114,16 +181,15 @@ export default function NotificationBell() {
             right-0
             mt-4
             w-[380px]
+            top-full
+max-h-[520px]
+z-[999]
             overflow-hidden
             rounded-3xl
             border
             border-slate-200
             bg-white
             shadow-2xl
-            animate-in
-            fade-in
-            zoom-in-95
-            duration-200
             z-50
           "
         >
@@ -143,15 +209,24 @@ export default function NotificationBell() {
 
           </div>
 
-          {/* Body */}
+          {/* Notifications */}
 
-          <div className="max-h-[450px] overflow-y-auto">
+          <div
+  className="
+    max-h-[420px]
+    overflow-y-auto
+    overscroll-contain
+    scrollbar-thin
+    scrollbar-thumb-slate-300
+    scrollbar-track-transparent
+  "
+>
 
             {userNotifications.length === 0 ? (
               <div className="py-14 text-center">
 
                 <Bell
-                  size={42}
+                  size={40}
                   className="mx-auto text-slate-300"
                 />
 
@@ -165,11 +240,21 @@ export default function NotificationBell() {
                 (notification) => (
                   <button
                     key={notification.id}
-                    onClick={() =>
+                    onClick={() => {
                       markAsRead(
                         notification.id
-                      )
-                    }
+                      );
+
+                      setOpen(false);
+
+                      if (
+                        notification.link
+                      ) {
+                        router.push(
+                          notification.link
+                        );
+                      }
+                    }}
                     className={`
                       w-full
                       border-b
@@ -181,16 +266,18 @@ export default function NotificationBell() {
                       hover:bg-slate-50
                       ${
                         !notification.isRead
-                          ? "bg-rose-50"
+                          ? "bg-rose-100"
                           : ""
                       }
                     `}
                   >
-                    <div className="flex items-start gap-3">
+                    <div className="flex gap-3">
 
-                      {!notification.isRead && (
-                        <div className="mt-2 h-2.5 w-2.5 rounded-full bg-rose-500" />
-                      )}
+                      <div className="mt-2">
+                        {!notification.isRead && (
+                          <div className="h-2.5 w-2.5 rounded-full bg-rose-500" />
+                        )}
+                      </div>
 
                       <div className="flex-1">
 

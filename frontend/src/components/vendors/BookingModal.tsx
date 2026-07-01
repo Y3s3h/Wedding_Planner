@@ -23,6 +23,9 @@ import {
 } from "@/services/availability.service";
 
 
+
+
+
 interface BookingModalProps {
   open: boolean;
 
@@ -196,10 +199,14 @@ if (vendor) {
 
     type: "booking",
 
+    link: "/customer/bookings",
+
     isRead: false,
 
     createdAt: new Date().toISOString(),
-  });
+});
+
+
 
   // Vendor Notification
   addNotification({
@@ -213,10 +220,12 @@ if (vendor) {
 
     type: "booking",
 
+    link: "/vendor/bookings",
+
     isRead: false,
 
     createdAt: new Date().toISOString(),
-  });
+});
 }
 
 setSuccess(true);
