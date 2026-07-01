@@ -10,6 +10,14 @@ import { useAuthStore } from "@/store/authStore";
 import { useBookingStore } from "@/store/bookingStore";
 import { Booking } from "@/types/booking";
 
+import { toast } from "sonner";
+
+
+import {
+  isDateBlocked,
+  isDateBooked,
+} from "@/services/availability.service";
+
 
 interface BookingModalProps {
   open: boolean;
@@ -72,8 +80,30 @@ const { addBooking } = useBookingStore();
     }
   }, [open]);
 
- const handleBooking = () => {
+const handleBooking = () => {
+
+
+// console.log("HANDLE BOOKING CALLED");
+
+//     console.log("Booking Vendor ID:", vendorId);
+// console.log("Booking Date:", date);
+console.log("Blocked?", isDateBlocked(vendorId, date));
   if (!user) return;
+
+  // Check vendor availability
+  if (isDateBlocked(vendorId, date)) {
+    toast.error(
+      "This date is blocked by the vendor."
+    );
+    return;
+  }
+
+  if (isDateBooked(vendorId, date)) {
+    toast.error(
+      "This date has already been booked."
+    );
+    return;
+  }
 
   setLoading(true);
 
@@ -89,116 +119,61 @@ const { addBooking } = useBookingStore();
 
     setBookingId(bookingNumber);
 
-    // const booking: Booking = {
+    const booking: Booking = {
+      id: crypto.randomUUID(),
 
-    //   id: crypto.randomUUID(),
+      bookingNumber,
 
-    //   bookingNumber,
+      customerId: user._id,
 
-    //   customerId: user._id,
+      vendorId,
 
-    //   vendorId: 0, // We'll replace this with the real vendor id in the next step.
+      customerName: user.name,
 
-    //   customerName: user.name,
+      customerEmail: formData.email,
 
-    //   customerEmail: formData.email,
+      customerPhone: formData.phone,
 
-    //   customerPhone: formData.phone,
+      vendorName,
 
-    //   vendorName,
+      category,
 
-    //   category: "",
+      packageName,
 
-    //   packageName,
+      eventType: "Wedding",
 
-    //   eventType: "Wedding",
+      eventDate: date,
 
-    //   eventDate: date,
+      eventTime: "",
 
-    //   eventTime: "",
+      venue: vendorName,
 
-    //   venue: "",
+      city,
 
-    //   city: "",
+      guests,
 
-    //   guests,
+      brideName: formData.brideName,
 
-    //   brideName: formData.brideName,
+      groomName: formData.groomName,
 
-    //   groomName: formData.groomName,
+      specialRequirements:
+        formData.requirements,
 
-    //   specialRequirements:
-    //     formData.requirements,
+      amount: price,
 
-    //   amount: price,
+      advancePaid: 0,
 
-    //   advancePaid: 0,
+      remainingAmount: price,
 
-    //   remainingAmount: price,
+      paymentStatus: "pending",
 
-    //   paymentStatus: "pending",
+      bookingStatus: "pending",
 
-    //   bookingStatus: "pending",
+      createdAt: new Date().toISOString(),
 
-    //   createdAt:
-    //     new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
 
-    //   updatedAt:
-    //     new Date().toISOString(),
-    // };
-const booking: Booking = {
-  id: crypto.randomUUID(),
-
-  bookingNumber,
-
-  customerId: user._id,
-
-  vendorId,
-
-  customerName: user.name,
-
-  customerEmail: formData.email,
-
-  customerPhone: formData.phone,
-
-  vendorName,
-
-  category,
-
-  packageName,
-
-  eventType: "Wedding",
-
-  eventDate: date,
-
-  eventTime: "",
-
-  venue: vendorName,
-
-  city,
-
-  guests,
-
-  brideName: formData.brideName,
-
-  groomName: formData.groomName,
-
-  specialRequirements: formData.requirements,
-
-  amount: price,
-
-  advancePaid: 0,
-
-  remainingAmount: price,
-
-  paymentStatus: "pending",
-
-  bookingStatus: "pending",
-
-  createdAt: new Date().toISOString(),
-
-  updatedAt: new Date().toISOString(),
-};
     addBooking(booking);
 
     setSuccess(true);

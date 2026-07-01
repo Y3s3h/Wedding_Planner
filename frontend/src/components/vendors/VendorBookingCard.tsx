@@ -11,6 +11,9 @@ import { getVendorServices } from "@/services/service.service";
 
 import { Vendor } from "@/types/vendor";
 
+import { useRouter } from "next/navigation";
+import { useMessageStore } from "@/store/messageStore";
+
 interface VendorBookingCardProps {
   vendor: Vendor;
 }
@@ -34,7 +37,13 @@ export default function VendorBookingCard({
   const [guests, setGuests] = useState(200);
   const [open, setOpen] = useState(false);
 
-  
+  const router = useRouter();
+
+const {
+  messages,
+  sendMessage,
+  setSelectedConversation,
+} = useMessageStore();
     
 
 
@@ -253,28 +262,80 @@ const canBook =
   </button>
 )}
 
-      <button
-        className="
-          mt-4
-          flex
-          w-full
-          items-center
-          justify-center
-          gap-2
-          rounded-xl
-          border
-          border-gray-300
-          py-4
-          font-semibold
-          text-gray-700
-          transition
-          hover:border-rose-500
-          hover:text-rose-500
-        "
-      >
-        <MessageCircle size={20} />
-        Send Inquiry
-      </button>
+     <button
+ onClick={() => {
+  if (!isAuthenticated) {
+    openLogin();
+    return;
+  }
+
+  if (user?.role !== "customer") {
+    return;
+  }
+
+  const exists = messages.some(
+    (message) =>
+      (message.senderId === user._id &&
+        message.receiverId === vendor.userId) ||
+      (message.receiverId === user._id &&
+        message.senderId === vendor.userId)
+  );
+
+  if (!exists) {
+    sendMessage({
+      id: crypto.randomUUID(),
+
+      senderId: user._id,
+
+      senderName: user.name,
+
+      receiverId: vendor.userId,
+
+      receiverName: vendor.name,
+
+      message:
+        "Hello! I'm interested in your services.",
+
+      sentAt: new Date().toISOString(),
+
+      status: "sent",
+    });
+  }
+
+ setSelectedConversation(vendor.userId);
+
+  router.push("/customer/messages");
+}}
+  className="
+    mt-4
+    flex
+    w-full
+    items-center
+    justify-center
+    gap-2
+    rounded-xl
+    border
+    border-gray-300
+    py-4
+    font-semibold
+    text-gray-700
+    transition
+    hover:border-rose-500
+    hover:text-rose-500
+  "
+>
+  <MessageCircle size={20} />
+  Send Inquiry
+
+
+
+</button>
+
+
+
+
+
+
 
       {/* Why Book */}
 

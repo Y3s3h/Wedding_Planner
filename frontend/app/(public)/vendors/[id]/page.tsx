@@ -23,6 +23,7 @@ export default function VendorDetailsPage() {
     const registeredVendors: Vendor[] = getVendors().map((vendor) => ({
       id: vendor.id,
 
+      userId: vendor.userId,
       name: vendor.businessName,
 
       category: vendor.category,
@@ -106,14 +107,12 @@ export default function VendorDetailsPage() {
 
         <div className="space-y-10 lg:col-span-2">
 
-          {/* <VendorGallery images={vendor.images} />
+          
 
-          <VendorAbout
-            description={vendor.description}
-            amenities={vendor.amenities}
-          /> */}
-
-          <VendorReviews />
+          <VendorReviews
+  vendorId={vendor.id}
+  vendorName={vendor.name}
+/>
 
         </div>
 

@@ -8,7 +8,7 @@ export default function MessagesHero() {
     <motion.section
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-[32px] bg-gradient-to-r from-cyan-600 via-sky-700 to-slate-800 p-8 text-white shadow-xl"
+      className="rounded-[28px] bg-gradient-to-r from-sky-700 via-blue-700 to-slate-900 px-10 py-7 text-white shadow-xl"
     >
       <div>
 
@@ -20,7 +20,7 @@ export default function MessagesHero() {
 
         </div>
 
-        <h1 className="mt-5 text-5xl font-bold">
+       <h1 className="mt-4 text-4xl font-bold leading-tight">
 
           Stay connected
           <br />
@@ -28,8 +28,7 @@ export default function MessagesHero() {
           with your clients.
 
         </h1>
-
-        <p className="mt-5 max-w-xl text-slate-200">
+<p className="mt-3 max-w-2xl text-slate-200">
 
           Discuss bookings, quotations and event details.
 
