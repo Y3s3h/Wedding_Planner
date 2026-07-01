@@ -6,7 +6,7 @@ export class CreatePackageDto {
   @ApiProperty({ example: 'Basic Photography Package' })
   @IsString()
   @IsNotEmpty()
-  title: string;
+  title!: string;
 
   @ApiProperty({ example: 'Includes 4 hours of coverage', required: false })
   @IsOptional()
@@ -16,12 +16,12 @@ export class CreatePackageDto {
   @ApiProperty({ example: 25000 })
   @IsNumber()
   @Type(() => Number)
-  price: number;
+  price!: number;
 
   @ApiProperty({ example: 'cat-uuid-here' })
   @IsString()
   @IsNotEmpty()
-  categoryId: string;
+  categoryId!: string;
 
   @ApiProperty({ 
     example: ['4 hours coverage', '500 edited photos', '1 photographer'],

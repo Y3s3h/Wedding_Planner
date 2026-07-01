@@ -17,6 +17,7 @@ import { VendorService } from './vendor.service';
 import { Patch } from '@nestjs/common';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
 
+
 @ApiTags('Vendor')
 @ApiBearerAuth()
 @Controller('vendor')

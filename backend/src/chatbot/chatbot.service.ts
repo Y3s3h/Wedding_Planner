@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { GoogleGenAI } from '@google/genai';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import Groq from 'groq-sdk';
 import { PrismaService } from '../prisma/prisma.service';
 
 const CUSTOMER_INSTRUCTION = `You are a friendly wedding planning assistant for couples on a wedding planning platform.
@@ -10,41 +10,67 @@ const VENDOR_INSTRUCTION = `You are a friendly business assistant for wedding ve
 You help vendors write portfolio descriptions, structure and price service packages, respond professionally to leads, and get more bookings.
 Keep responses practical and business-focused.`;
 
+const SUPPORTED_AUDIO_FORMATS = ['mp3', 'mp4', 'mpeg', 'mpga', 'm4a', 'wav', 'webm'];
+
 @Injectable()
 export class ChatbotService {
-  private ai: GoogleGenAI;
+  private groq: Groq;
 
   constructor(private prisma: PrismaService) {
-    this.ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    this.groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
   }
 
   async sendMessage(userId: string, role: string, content: string) {
+    // Fetch history BEFORE saving current message to avoid duplication
+    const recent = await this.prisma.chatMessage.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      take: 19, // 19 history + 1 current = 20 total context messages
+    });
+    const history = recent.reverse();
+
+    // Save user message after fetching history
     await this.prisma.chatMessage.create({
       data: { userId, role: 'USER', content },
     });
 
-    const recent = await this.prisma.chatMessage.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'desc' },
-      take: 20,
-    });
-    const history = recent.reverse();
+    // Build messages array for Groq
+    const messages = [
+      {
+        role: 'system' as const,
+        content:
+          role?.toUpperCase() === 'VENDOR'
+            ? VENDOR_INSTRUCTION
+            : CUSTOMER_INSTRUCTION,
+      },
+      ...history.map((m) => ({
+        role: m.role === 'USER' ? ('user' as const) : ('assistant' as const),
+        content: m.content,
+      })),
+      // Add current message explicitly
+      { role: 'user' as const, content },
+    ];
 
-    const contents = history.map((m) => ({
-      role: m.role === 'USER' ? 'user' : 'model',
-      parts: [{ text: m.content }],
-    }));
+    // Call Groq with error handling
+    let replyText: string;
+    try {
+      const completion = await this.groq.chat.completions.create({
+        model: 'llama-3.3-70b-versatile',
+        messages,
+        temperature: 0.7,
+        max_tokens: 1024,
+      });
 
-    const systemInstruction = role === 'VENDOR' ? VENDOR_INSTRUCTION : CUSTOMER_INSTRUCTION;
+      replyText =
+        completion.choices[0]?.message?.content ??
+        "Sorry, I couldn't generate a response. Please try again.";
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'AI service is currently unavailable. Please try again later.',
+      );
+    }
 
-    const response = await this.ai.models.generateContent({
-      model: 'gemini-2.0-flash-lite',
-      contents,
-      config: { systemInstruction },
-    });
-
-    const replyText = response.text ?? "Sorry, I couldn't generate a response. Please try again.";
-
+    // Save assistant reply
     await this.prisma.chatMessage.create({
       data: { userId, role: 'ASSISTANT', content: replyText },
     });
@@ -52,30 +78,48 @@ export class ChatbotService {
     return { reply: replyText };
   }
 
-  async transcribeAndRespond(userId: string, role: string, audioBuffer: Buffer, mimeType: string) {
-    const base64Audio = audioBuffer.toString('base64');
-
-    const transcriptionResponse = await this.ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: [
-        {
-          role: 'user',
-          parts: [
-            { text: 'Transcribe exactly what is said in this audio. Return ONLY the transcript text, nothing else — no labels, no quotes.' },
-            { inlineData: { mimeType, data: base64Audio } },
-          ],
-        },
-      ],
-    });
-
-    const transcript = transcriptionResponse.text?.trim();
-    if (!transcript) {
-      throw new Error('Could not transcribe audio. Please try again.');
+  async transcribeAndRespond(
+    userId: string,
+    role: string,
+    audioBuffer: Buffer,
+    mimeType: string,
+  ) {
+    // Validate audio format
+    const format = mimeType.split('/')[1];
+    if (!SUPPORTED_AUDIO_FORMATS.includes(format)) {
+      throw new BadRequestException(
+        `Unsupported audio format: ${format}. Supported formats: ${SUPPORTED_AUDIO_FORMATS.join(', ')}`,
+      );
     }
 
-    // Reuse the exact same pipeline as a text message — stores transcript, replies, stores reply
-    const result = await this.sendMessage(userId, role, transcript);
+    // Transcribe with error handling
+    let transcript: string;
+    try {
+      const transcription = await this.groq.audio.transcriptions.create({
+        file: new File(
+  [new Uint8Array(audioBuffer)],
+  `audio.${format}`,
+  { type: mimeType },
+),
+        model: 'whisper-large-v3',
+        response_format: 'text',
+      });
 
+      transcript = transcription.toString().trim();
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Audio transcription failed. Please try again.',
+      );
+    }
+
+    if (!transcript) {
+      throw new BadRequestException(
+        'Could not transcribe audio. Please speak clearly and try again.',
+      );
+    }
+
+    // Reuse text pipeline
+    const result = await this.sendMessage(userId, role, transcript);
     return { transcript, reply: result.reply };
   }
 
