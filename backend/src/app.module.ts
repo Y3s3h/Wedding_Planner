@@ -17,6 +17,7 @@ import { BookingsModule } from './bookings/bookings.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { BudgetsModule } from './budgets/budgets.module';
 import { ExpensesModule } from './expenses/expenses.module';
+import { LeadsModule } from './leads/leads.module';
 
 @Module({
   imports: [
@@ -30,7 +31,7 @@ import { ExpensesModule } from './expenses/expenses.module';
     VendorModule,
     ChatbotModule,
     CategoriesModule, 
-     PackagesModule, BookingsModule, ReviewsModule, BudgetsModule, ExpensesModule,
+     PackagesModule, BookingsModule, ReviewsModule, BudgetsModule, ExpensesModule, LeadsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
