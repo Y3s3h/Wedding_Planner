@@ -13,6 +13,10 @@ import { Booking } from "@/types/booking";
 import { toast } from "sonner";
 
 
+import { useNotificationStore } from "@/store/notificationStore";
+import { getVendorById } from "@/services/vendor.service";
+
+
 import {
   isDateBlocked,
   isDateBooked,
@@ -60,6 +64,9 @@ export default function BookingModal({
   const { user } = useAuthStore();
 const { addBooking } = useBookingStore();
 
+const { addNotification } =
+  useNotificationStore();
+
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -83,10 +90,7 @@ const { addBooking } = useBookingStore();
 const handleBooking = () => {
 
 
-// console.log("HANDLE BOOKING CALLED");
 
-//     console.log("Booking Vendor ID:", vendorId);
-// console.log("Booking Date:", date);
 console.log("Blocked?", isDateBlocked(vendorId, date));
   if (!user) return;
 
@@ -174,9 +178,48 @@ console.log("Blocked?", isDateBlocked(vendorId, date));
       updatedAt: new Date().toISOString(),
     };
 
-    addBooking(booking);
+   addBooking(booking);
 
-    setSuccess(true);
+// Find vendor
+const vendor = getVendorById(vendorId);
+
+if (vendor) {
+  // Customer Notification
+  addNotification({
+    id: crypto.randomUUID(),
+
+    userId: user._id,
+
+    title: "Booking Submitted",
+
+    message: `Your booking request for ${vendorName} has been submitted.`,
+
+    type: "booking",
+
+    isRead: false,
+
+    createdAt: new Date().toISOString(),
+  });
+
+  // Vendor Notification
+  addNotification({
+    id: crypto.randomUUID(),
+
+    userId: vendor.userId,
+
+    title: "New Booking",
+
+    message: `${user.name} booked your ${category} service.`,
+
+    type: "booking",
+
+    isRead: false,
+
+    createdAt: new Date().toISOString(),
+  });
+}
+
+setSuccess(true);
   }, 2000);
 };
 
