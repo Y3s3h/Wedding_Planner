@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+
 import "./globals.css";
+
 import AuthModal from "@/components/auth/AuthModal";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,9 +35,17 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}
+      <body className="min-h-full flex flex-col">
+        {children}
 
         <AuthModal />
+
+        <Toaster
+          position="top-right"
+          richColors
+          closeButton
+          duration={3000}
+        />
       </body>
     </html>
   );

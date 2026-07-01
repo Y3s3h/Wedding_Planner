@@ -3,6 +3,7 @@
 export const vendors = [
   {
     id: 1,
+    userId: "demo-vendor-1",
     name: "Royal Palace Jaipur",
     category: "Wedding Venue",
     city: "Jaipur",
@@ -38,6 +39,7 @@ export const vendors = [
 
   {
     id: 2,
+    userId: "demo-vendor-2",
     name: "Bliss Photography",
     category: "Photographer",
     city: "Delhi",
@@ -71,6 +73,7 @@ export const vendors = [
 
   {
     id: 3,
+    userId: "demo-vendor-3",
     name: "Dream Decor Studio",
     category: "Decorator",
     city: "Mumbai",
@@ -104,6 +107,7 @@ export const vendors = [
 
   {
     id: 4,
+    userId: "demo-vendor-4",
     name: "Flavors Catering",
     category: "Catering",
     city: "Bengaluru",
@@ -138,6 +142,7 @@ export const vendors = [
 
   {
     id: 5,
+    userId: "demo-vendor-5",
     name: "Elite Makeup Studio",
     category: "Makeup Artist",
     city: "Hyderabad",
@@ -171,6 +176,7 @@ export const vendors = [
 
   {
     id: 6,
+    userId: "demo-vendor-6",
     name: "Melody Beats",
     category: "DJ & Music",
     city: "Pune",
@@ -204,6 +210,7 @@ export const vendors = [
 
   {
     id: 7,
+    userId: "demo-vendor-7",
     name: "Luxury Wheels",
     category: "Wedding Transport",
     city: "Chandigarh",
@@ -237,6 +244,7 @@ export const vendors = [
 
   {
     id: 8,
+    userId: "demo-vendor-8",
     name: "Bloom Florists",
     category: "Florist",
     city: "Kolkata",
@@ -270,6 +278,7 @@ export const vendors = [
 
   {
     id: 9,
+    userId: "demo-vendor-9",
     name: "Golden Moments Events",
     category: "Wedding Planner",
     city: "Goa",
@@ -308,6 +317,7 @@ export const vendors = [
 
   {
   id: 10,
+  userId: "demo-vendor-10",
   name: "Imperial Palace Delhi",
   category: "Wedding Venue",
   city: "Delhi",
@@ -341,6 +351,7 @@ export const vendors = [
 
 {
   id: 11,
+  userId: "demo-vendor-11",
   name: "Lens Craft Studio",
   category: "Photographer",
   city: "Mumbai",
@@ -374,6 +385,7 @@ export const vendors = [
 
 {
   id: 12,
+  userId: "demo-vendor-12",
   name: "Elegant Decor Hub",
   category: "Decorator",
   city: "Goa",
@@ -407,6 +419,7 @@ export const vendors = [
 
 {
   id: 13,
+  userId: "demo-vendor-13",
   name: "Royal Feast Caterers",
   category: "Catering",
   city: "Jaipur",
@@ -440,6 +453,7 @@ export const vendors = [
 
 {
   id: 14,
+  userId: "demo-vendor-14",
   name: "Glam Bridal Studio",
   category: "Makeup Artist",
   city: "Delhi",
@@ -473,6 +487,7 @@ export const vendors = [
 
 {
   id: 15,
+  userId: "demo-vendor-15",
   name: "DJ Thunder Beats",
   category: "DJ & Music",
   city: "Mumbai",
@@ -506,6 +521,7 @@ export const vendors = [
 
 {
   id: 16,
+  userId: "demo-vendor-16",
   name: "Dream Day Planners",
   category: "Wedding Planner",
   city: "Udaipur",
@@ -539,6 +555,7 @@ export const vendors = [
 
 {
   id: 17,
+  userId: "demo-vendor-17",
   name: "Royal Wedding Cars",
   category: "Wedding Transport",
   city: "Delhi",
@@ -572,6 +589,7 @@ export const vendors = [
 
 {
   id: 18,
+  userId: "demo-vendor-18",
   name: "Rose Bloom Florists",
   category: "Florist",
   city: "Jaipur",

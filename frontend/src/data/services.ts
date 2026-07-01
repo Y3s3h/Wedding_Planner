@@ -1,111 +1,111 @@
-import { Service } from "@/types/service";
+// import { Service } from "@/types/service";
 
-export const services: Service[] = [
-  {
-    id: "SER001",
+// export const services: Service[] = [
+//   {
+//     id: "SER001",
 
-    vendorId: "VEN001",
+//     vendorId: "VEN001",
 
-    name: "Wedding Photography",
+//     name: "Wedding Photography",
 
-    category: "Photography",
+//     category: "Photography",
 
-    description:
-      "Premium wedding photography package.",
+//     description:
+//       "Premium wedding photography package.",
 
-    price: 45000,
+//     price: 45000,
 
-    rating: 4.9,
+//     rating: 4.9,
 
-    reviews: 128,
+//     reviews: 128,
 
-    image: "/images/services/photo.jpg",
+//     image: "/images/services/photo.jpg",
 
-    status: "active",
+//     status: "active",
 
-    createdAt: "2026-08-01",
+//     createdAt: "2026-08-01",
 
-    updatedAt: "2026-08-01",
-  },
+//     updatedAt: "2026-08-01",
+//   },
 
-  {
-    id: "SER002",
+//   {
+//     id: "SER002",
 
-    vendorId: "VEN002",
+//     vendorId: "VEN002",
 
-    name: "Luxury Decoration",
+//     name: "Luxury Decoration",
 
-    category: "Decoration",
+//     category: "Decoration",
 
-    description:
-      "Luxury floral decoration for weddings.",
+//     description:
+//       "Luxury floral decoration for weddings.",
 
-    price: 80000,
+//     price: 80000,
 
-    rating: 4.8,
+//     rating: 4.8,
 
-    reviews: 95,
+//     reviews: 95,
 
-    image: "/images/services/decor.jpg",
+//     image: "/images/services/decor.jpg",
 
-    status: "active",
+//     status: "active",
 
-    createdAt: "2026-08-01",
+//     createdAt: "2026-08-01",
 
-    updatedAt: "2026-08-01",
-  },
+//     updatedAt: "2026-08-01",
+//   },
 
-  {
-    id: "SER003",
+//   {
+//     id: "SER003",
 
-    vendorId: "VEN003",
+//     vendorId: "VEN003",
 
-    name: "Premium Catering",
+//     name: "Premium Catering",
 
-    category: "Catering",
+//     category: "Catering",
 
-    description:
-      "Multi-cuisine catering service.",
+//     description:
+//       "Multi-cuisine catering service.",
 
-    price: 150000,
+//     price: 150000,
 
-    rating: 5.0,
+//     rating: 5.0,
 
-    reviews: 76,
+//     reviews: 76,
 
-    image: "/images/services/catering.jpg",
+//     image: "/images/services/catering.jpg",
 
-    status: "active",
+//     status: "active",
 
-    createdAt: "2026-08-01",
+//     createdAt: "2026-08-01",
 
-    updatedAt: "2026-08-01",
-  },
-];
+//     updatedAt: "2026-08-01",
+//   },
+// ];
 
-// All services
-export const getServices = () => services;
+// // All services
+// export const getServices = () => services;
 
-// Single service
-export const getServiceById = (id: string) =>
-  services.find((service) => service.id === id);
+// // Single service
+// export const getServiceById = (id: string) =>
+//   services.find((service) => service.id === id);
 
-// Vendor services
-export const getVendorServices = (vendorId: string) =>
-  services.filter(
-    (service) => service.vendorId === vendorId
-  );
+// // Vendor services
+// export const getVendorServices = (vendorId: string) =>
+//   services.filter(
+//     (service) => service.vendorId === vendorId
+//   );
 
-// Active services
-export const getActiveServices = () =>
-  services.filter(
-    (service) => service.status === "active"
-  );
+// // Active services
+// export const getActiveServices = () =>
+//   services.filter(
+//     (service) => service.status === "active"
+//   );
 
-// Category services
-export const getServicesByCategory = (
-  category: string
-) =>
-  services.filter(
-    (service) => service.category === category
-  );
+// // Category services
+// export const getServicesByCategory = (
+//   category: string
+// ) =>
+//   services.filter(
+//     (service) => service.category === category
+//   );

@@ -38,12 +38,14 @@ export const useMessageStore =
       }),
 
     sendMessage: (message) =>
-      set((state) => ({
-        messages: [
-          ...state.messages,
-          message,
-        ],
-      })),
+  set((state) => {
+    messageService.sendMessage(message);
+
+    return {
+      messages:
+        messageService.getMessages(),
+    };
+  }),
 
     clearConversation: () =>
       set({

@@ -11,7 +11,7 @@ import CTAButton from "./CTAButton";
 import { useAuthStore } from "@/store/authStore";
 
 import Link from "next/link";
-
+import NotificationBell from "./NotificationBell";
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 
@@ -52,9 +52,9 @@ export default function Navbar() {
           <DesktopNavigation />
         </div>
 
-        <div className="hidden items-center gap-5 lg:flex">
+        <div className="hidden items-center gap-3 lg:flex">
           {isAuthenticated ? (
-  <div className="flex items-center gap-5">
+<div className="flex shrink-0 items-center gap-3">
     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-rose-500 font-bold text-white">
       {user?.name?.charAt(0).toUpperCase()}
     </div>
@@ -68,7 +68,7 @@ export default function Navbar() {
         {user?.role}
       </p>
     </div>
-
+  <NotificationBell />
     <Link
       href={
         user?.role === "vendor"

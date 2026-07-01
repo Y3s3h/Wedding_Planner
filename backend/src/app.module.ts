@@ -20,6 +20,10 @@ import { TimelineModule } from './timeline/timeline.module';
 import { ChecklistModule } from './checklist/checklist.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { AdminModule } from './admin/admin.module';
+import { ReviewsModule } from './reviews/reviews.module';
+import { BudgetsModule } from './budgets/budgets.module';
+import { ExpensesModule } from './expenses/expenses.module';
+import { LeadsModule } from './leads/leads.module';
 
 @Module({
   imports: [
@@ -35,6 +39,7 @@ import { AdminModule } from './admin/admin.module';
     CategoriesModule, 
      PackagesModule, PaymentModule,
      PackagesModule, BookingsModule, GuestsModule, TimelineModule, ChecklistModule, NotificationsModule, AdminModule,
+     PackagesModule, BookingsModule, ReviewsModule, BudgetsModule, ExpensesModule, LeadsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

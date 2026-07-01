@@ -1,162 +1,466 @@
+// "use client";
+
+// import { useEffect, useMemo, useState } from "react";
+// import { Star } from "lucide-react";
+
+// import { useReviewStore } from "@/store/reviewStore";
+
+// import WriteReviewModal from "./WriteReviewModal";
+// import { useAuthStore } from "@/store/authStore";
+// import { useBookingStore } from "@/store/bookingStore";
+
+
+// interface VendorReviewsProps {
+//   vendorId: number;
+//   vendorName: string;
+// }
+
+// export default function VendorReviews({
+//   vendorId,
+//   vendorName,
+// }: VendorReviewsProps) {
+//   const [open, setOpen] = useState(false);
+
+
+
+//   const { user } = useAuthStore();
+
+// const {
+//   bookings,
+//   loadCustomerBookings,
+// } = useBookingStore();
+
+// useEffect(() => {
+//   if (user?.role === "customer") {
+//     loadCustomerBookings(user._id);
+//   }
+// }, [user, loadCustomerBookings]);
+
+//   const {
+//     reviews,
+//     loadVendorReviews,
+//   } = useReviewStore();
+
+//   useEffect(() => {
+//     loadVendorReviews(vendorId);
+//   }, [vendorId, loadVendorReviews]);
+
+//   const averageRating = useMemo(() => {
+//     if (reviews.length === 0) {
+//       return 0;
+//     }
+
+//     const total = reviews.reduce(
+//       (sum, review) => sum + review.rating,
+//       0
+//     );
+
+//     return Number(
+//       (total / reviews.length).toFixed(1)
+//     );
+//   }, [reviews]);
+
+//   const ratingCount = (star: number) =>
+//     reviews.filter(
+//       (review) => review.rating === star
+//     ).length;
+
+
+
+
+//     const hasBookedVendor =
+//   !!user &&
+//   user.role === "customer" &&
+//   bookings.some(
+//     (booking) =>
+//       booking.vendorId === vendorId
+//   );
+
+//   return (
+//     <>
+//       <section className="rounded-3xl bg-white p-8 shadow-sm">
+
+//         <div className="flex items-center justify-between">
+
+//           <div>
+
+//             <h2 className="text-3xl font-bold text-gray-900">
+//               Customer Reviews
+//             </h2>
+
+//             <p className="mt-2 text-gray-500">
+//               Hear what couples say about this vendor.
+//             </p>
+
+//           </div>
+
+//           <button
+//             onClick={() => setOpen(true)}
+//             className="rounded-xl bg-rose-500 px-5 py-3 font-semibold text-white transition hover:bg-rose-600"
+//           >
+//             Write Review
+//           </button>
+
+//         </div>
+
+//         {/* Rating Summary */}
+
+//         <div className="mt-10 flex flex-col gap-6 rounded-2xl bg-rose-50 p-6 md:flex-row md:items-center md:justify-between">
+
+//           <div>
+
+//             <h3 className="text-5xl font-bold text-gray-900">
+//               {averageRating || "0.0"}
+//             </h3>
+
+//             <div className="mt-2 flex text-yellow-400">
+
+//               {[1, 2, 3, 4, 5].map((star) => (
+//                 <Star
+//                   key={star}
+//                   size={22}
+//                   fill={
+//                     star <= Math.round(averageRating)
+//                       ? "currentColor"
+//                       : "none"
+//                   }
+//                 />
+//               ))}
+
+//             </div>
+
+//             <p className="mt-2 text-gray-500">
+//               Based on {reviews.length} Reviews
+//             </p>
+
+//           </div>
+
+//           <div className="space-y-3">
+
+//             {[5, 4, 3, 2, 1].map((star) => {
+//               const count = ratingCount(star);
+
+//               const width =
+//                 reviews.length === 0
+//                   ? 0
+//                   : (count / reviews.length) * 100;
+
+//               return (
+//                 <div
+//                   key={star}
+//                   className="flex items-center gap-4"
+//                 >
+//                   <span className="w-8 text-sm font-medium">
+//                     {star}★
+//                   </span>
+
+//                   <div className="h-2 w-48 overflow-hidden rounded-full bg-gray-200">
+
+//                     <div
+//                       className="h-full rounded-full bg-yellow-400"
+//                       style={{
+//                         width: `${width}%`,
+//                       }}
+//                     />
+
+//                   </div>
+
+//                 </div>
+//               );
+//             })}
+
+//           </div>
+
+//         </div>
+
+//         {/* Reviews */}
+
+//         <div className="mt-10 space-y-6">
+
+//           {reviews.length === 0 ? (
+//             <div className="rounded-2xl border border-dashed border-gray-300 p-10 text-center text-gray-500">
+//               No reviews yet.
+//             </div>
+//           ) : (
+//             reviews.map((review) => (
+//               <div
+//                 key={review.id}
+//                 className="rounded-2xl border border-gray-200 p-6"
+//               >
+//                 <div className="flex items-center justify-between">
+
+//                   <div>
+
+//                     <h4 className="font-semibold text-gray-900">
+//                       {review.customerName}
+//                     </h4>
+
+//                     <p className="text-sm text-gray-500">
+//                       {new Date(
+//                         review.createdAt
+//                       ).toLocaleDateString()}
+//                     </p>
+
+//                   </div>
+
+//                   <div className="flex text-yellow-400">
+
+//                     {[1, 2, 3, 4, 5].map((star) => (
+//                       <Star
+//                         key={star}
+//                         size={18}
+//                         fill={
+//                           star <= review.rating
+//                             ? "currentColor"
+//                             : "none"
+//                         }
+//                       />
+//                     ))}
+
+//                   </div>
+
+//                 </div>
+
+//                 <p className="mt-4 leading-7 text-gray-600">
+//                   {review.comment}
+//                 </p>
+
+//               </div>
+//             ))
+//           )}
+
+//         </div>
+
+//       </section>
+
+//       <WriteReviewModal
+//         open={open}
+//         onClose={() => setOpen(false)}
+//         vendorId={vendorId}
+//         vendorName={vendorName}
+//       />
+//     </>
+//   );
+// }
+
+
+
+
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
 import { Star } from "lucide-react";
 
-const reviews = [
-  {
-    id: 1,
-    name: "Priya Sharma",
-    rating: 5,
-    date: "12 May 2026",
-    review:
-      "Everything was perfectly managed. The venue looked magical and the staff was extremely professional.",
-  },
-  {
-    id: 2,
-    name: "Rahul Verma",
-    rating: 5,
-    date: "28 April 2026",
-    review:
-      "One of the best wedding venues we visited. Highly recommended for destination weddings.",
-  },
-  {
-    id: 3,
-    name: "Sneha Kapoor",
-    rating: 4,
-    date: "15 March 2026",
-    review:
-      "Beautiful property with amazing decoration and food. Worth every penny.",
-  },
-];
+import { useReviewStore } from "@/store/reviewStore";
+import { useAuthStore } from "@/store/authStore";
+import { useBookingStore } from "@/store/bookingStore";
 
-export default function VendorReviews() {
+import WriteReviewModal from "./WriteReviewModal";
+
+interface VendorReviewsProps {
+  vendorId: number;
+  vendorName: string;
+}
+
+export default function VendorReviews({
+  vendorId,
+  vendorName,
+}: VendorReviewsProps) {
+  const [open, setOpen] = useState(false);
+
+  const { user } = useAuthStore();
+
+  const {
+    bookings,
+    loadCustomerBookings,
+  } = useBookingStore();
+
+  useEffect(() => {
+    if (
+      user &&
+      user.role === "customer"
+    ) {
+      loadCustomerBookings(user._id);
+    }
+  }, [user, loadCustomerBookings]);
+
+  const {
+    reviews,
+    loadVendorReviews,
+  } = useReviewStore();
+
+  useEffect(() => {
+    loadVendorReviews(vendorId);
+  }, [vendorId, loadVendorReviews]);
+
+  const averageRating = useMemo(() => {
+    if (reviews.length === 0) {
+      return 0;
+    }
+
+    const total = reviews.reduce(
+      (sum, review) => sum + review.rating,
+      0
+    );
+
+    return Number(
+      (total / reviews.length).toFixed(1)
+    );
+  }, [reviews]);
+
+  const ratingCount = (star: number) =>
+    reviews.filter(
+      (review) => review.rating === star
+    ).length;
+
+  const hasBookedVendor = useMemo(() => {
+    if (!user || user.role !== "customer") {
+      return false;
+    }
+
+    return bookings.some(
+      (booking) =>
+        booking.vendorId === vendorId
+    );
+  }, [bookings, vendorId, user]);
+
   return (
-    <section className="rounded-3xl bg-white p-8 shadow-sm">
+    <>
+      <section className="rounded-3xl bg-white p-8 shadow-sm">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900">
+              Customer Reviews
+            </h2>
 
-      <div className="flex items-center justify-between">
-
-        <div>
-
-          <h2 className="text-3xl font-bold text-gray-900">
-            Customer Reviews
-          </h2>
-
-          <p className="mt-2 text-gray-500">
-            Hear what couples say about this vendor.
-          </p>
-
-        </div>
-
-        <button className="rounded-xl bg-rose-500 px-5 py-3 font-semibold text-white transition hover:bg-rose-600">
-          Write Review
-        </button>
-
-      </div>
-
-      {/* Rating Summary */}
-
-      <div className="mt-10 flex flex-col gap-6 rounded-2xl bg-rose-50 p-6 md:flex-row md:items-center md:justify-between">
-
-        <div>
-
-          <h3 className="text-5xl font-bold text-gray-900">
-            4.9
-          </h3>
-
-          <div className="mt-2 flex text-yellow-400">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                size={22}
-                fill="currentColor"
-              />
-            ))}
-          </div>
-
-          <p className="mt-2 text-gray-500">
-            Based on 250 Reviews
-          </p>
-
-        </div>
-
-        <div className="space-y-3">
-
-          {[5, 4, 3, 2, 1].map((star) => (
-            <div
-              key={star}
-              className="flex items-center gap-4"
-            >
-              <span className="w-8 text-sm font-medium">
-                {star}★
-              </span>
-
-              <div className="h-2 w-48 overflow-hidden rounded-full bg-gray-200">
-                <div
-                  className="h-full rounded-full bg-yellow-400"
-                  style={{
-                    width:
-                      star === 5
-                        ? "85%"
-                        : star === 4
-                        ? "10%"
-                        : star === 3
-                        ? "3%"
-                        : "1%",
-                  }}
-                />
-              </div>
-
-            </div>
-          ))}
-
-        </div>
-
-      </div>
-
-      {/* Reviews */}
-
-      <div className="mt-10 space-y-6">
-
-        {reviews.map((review) => (
-          <div
-            key={review.id}
-            className="rounded-2xl border border-gray-200 p-6"
-          >
-            <div className="flex items-center justify-between">
-
-              <div>
-
-                <h4 className="font-semibold text-gray-900">
-                  {review.name}
-                </h4>
-
-                <p className="text-sm text-gray-500">
-                  {review.date}
-                </p>
-
-              </div>
-
-              <div className="flex text-yellow-400">
-
-                {[...Array(review.rating)].map((_, i) => (
-                  <Star
-                    key={i}
-                    size={18}
-                    fill="currentColor"
-                  />
-                ))}
-
-              </div>
-
-            </div>
-
-            <p className="mt-4 leading-7 text-gray-600">
-              {review.review}
+            <p className="mt-2 text-gray-500">
+              Hear what couples say about this vendor.
             </p>
-
           </div>
-        ))}
 
-      </div>
+          {hasBookedVendor && (
+            <button
+              onClick={() => setOpen(true)}
+              className="rounded-xl bg-rose-500 px-5 py-3 font-semibold text-white transition hover:bg-rose-600"
+            >
+              Write Review
+            </button>
+          )}
+        </div>
 
-    </section>
+        {/* Rating Summary */}
+        <div className="mt-10 flex flex-col gap-6 rounded-2xl bg-rose-50 p-6 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h3 className="text-5xl font-bold text-gray-900">
+              {averageRating || "0.0"}
+            </h3>
+
+            <div className="mt-2 flex text-yellow-400">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Star
+                  key={star}
+                  size={22}
+                  fill={
+                    star <= Math.round(averageRating)
+                      ? "currentColor"
+                      : "none"
+                  }
+                />
+              ))}
+            </div>
+
+            <p className="mt-2 text-gray-500">
+              Based on {reviews.length} Reviews
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            {[5, 4, 3, 2, 1].map((star) => {
+              const count = ratingCount(star);
+
+              const width =
+                reviews.length === 0
+                  ? 0
+                  : (count / reviews.length) * 100;
+
+              return (
+                <div
+                  key={star}
+                  className="flex items-center gap-4"
+                >
+                  <span className="w-8 text-sm font-medium">
+                    {star}★
+                  </span>
+
+                  <div className="h-2 w-48 overflow-hidden rounded-full bg-gray-200">
+                    <div
+                      className="h-full rounded-full bg-yellow-400"
+                      style={{
+                        width: `${width}%`,
+                      }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Reviews */}
+        <div className="mt-10 space-y-6">
+          {reviews.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-gray-300 p-10 text-center text-gray-500">
+              No reviews yet.
+            </div>
+          ) : (
+            reviews.map((review) => (
+              <div
+                key={review.id}
+                className="rounded-2xl border border-gray-200 p-6"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-semibold text-gray-900">
+                      {review.customerName}
+                    </h4>
+
+                    <p className="text-sm text-gray-500">
+                      {new Date(
+                        review.createdAt
+                      ).toLocaleDateString()}
+                    </p>
+                  </div>
+
+                  <div className="flex text-yellow-400">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        size={18}
+                        fill={
+                          star <= review.rating
+                            ? "currentColor"
+                            : "none"
+                        }
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <p className="mt-4 leading-7 text-gray-600">
+                  {review.comment}
+                </p>
+              </div>
+            ))
+          )}
+        </div>
+      </section>
+
+      <WriteReviewModal
+        open={open}
+        onClose={() => setOpen(false)}
+        vendorId={vendorId}
+        vendorName={vendorName}
+      />
+    </>
   );
 }

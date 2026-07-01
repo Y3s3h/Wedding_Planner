@@ -10,6 +10,7 @@ import {
   MessageCircle,
   FileText,
   Eye,
+  Star,
 } from "lucide-react";
 
 import { Booking } from "@/types/booking";
@@ -179,6 +180,30 @@ export default function BookingCard({
               Invoice
 
             </button>
+
+
+
+            {booking.bookingStatus === "completed" && (
+  <button
+    className="
+      flex
+      items-center
+      gap-2
+      rounded-2xl
+      bg-amber-500
+      px-5
+      py-3
+      font-semibold
+      text-white
+      transition
+      hover:bg-amber-600
+    "
+  >
+    <Star size={18} />
+
+    Leave Review
+  </button>
+)}
 
           </div>
 

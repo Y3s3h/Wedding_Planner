@@ -1,14 +1,33 @@
 "use client";
 
 import Image from "next/image";
+import { getVendorPortfolio } from "@/services/portfolio.service";
 
 interface VendorGalleryProps {
-  images: string[];
+  vendorId: number;
 }
 
 export default function VendorGallery({
-  images,
+  vendorId,
 }: VendorGalleryProps) {
+  const portfolio = getVendorPortfolio(vendorId);
+
+  const images = portfolio.map((item) => item.image);
+
+  if (images.length === 0) {
+    return (
+      <section className="mt-10 rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
+        <h2 className="text-3xl font-bold text-slate-900">
+          Gallery
+        </h2>
+
+        <p className="mt-4 text-slate-500">
+          This vendor hasn't uploaded any portfolio yet.
+        </p>
+      </section>
+    );
+  }
+
   return (
     <section className="mt-10">
 
@@ -32,14 +51,14 @@ export default function VendorGallery({
 
           <Image
             src={images[0]}
-            alt=""
+            alt="Portfolio"
             fill
             className="object-cover transition duration-500 hover:scale-105"
           />
 
         </div>
 
-        {/* Right Images */}
+        {/* Remaining Images */}
 
         <div className="col-span-4 grid grid-cols-2 gap-4 lg:col-span-2">
 
@@ -50,7 +69,7 @@ export default function VendorGallery({
             >
               <Image
                 src={image}
-                alt=""
+                alt="Portfolio"
                 fill
                 className="object-cover transition duration-500 hover:scale-105"
               />

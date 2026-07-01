@@ -34,6 +34,7 @@ import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
 import { SearchVendorDto } from './dto/search-vendor.dto';
 
+
 @ApiTags('Vendor')
 @ApiBearerAuth()
 @Controller('vendor')
