@@ -37,10 +37,12 @@ model User {
 }
 
 model Vendor {
-  id           String   @id @default(uuid())
+  id           String  @id @default(uuid())
   businessName String
   description  String?
   address      String?
+  logoUrl      String?
+  coverImage   String?
 
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -49,6 +51,21 @@ model Vendor {
   category   Category? @relation(fields: [categoryId], references: [id])
 
   packages  Package[]
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  gallery   VendorGallery[]
+
+  bookings Booking[]
+}
+
+model VendorGallery {
+  id       String @id @default(uuid())
+  imageUrl String
+
+  vendorId String
+  vendor   Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   bookings  Booking[] 
@@ -68,10 +85,10 @@ model Category {
 }
 
 model Package {
-  id          String  @id @default(uuid())
+  id          String   @id @default(uuid())
   title       String
   description String?
-  price       Decimal @db.Decimal(10, 2)
+  price       Decimal  @db.Decimal(10, 2)
   inclusions  String[]
 
   vendorId String
@@ -101,6 +118,7 @@ enum PaymentStatus {
   FAILED
   REFUNDED
 }
+
 model Booking {
   id String @id @default(uuid())
 
@@ -125,6 +143,7 @@ model Booking {
   updatedAt DateTime @updatedAt
   review Review? 
 }
+
 model Review {
   id      String  @id @default(uuid())
   rating  Int     @default(5)
@@ -154,7 +173,7 @@ enum GuestStatus {
 }
 
 model Guest {
-  id     String  @id @default(uuid())
+  id     String      @id @default(uuid())
   name   String
   phone  String?
   email  String?
@@ -235,6 +254,7 @@ model Notification {
 
   createdAt DateTime @default(now())
 }
+
 enum ChatRole {
   USER
   ASSISTANT

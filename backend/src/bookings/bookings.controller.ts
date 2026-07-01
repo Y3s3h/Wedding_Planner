@@ -1,6 +1,6 @@
 import {
   Controller,
-  Get,
+ Get,
   Post,
   Patch,
   Param,
@@ -8,22 +8,38 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
+import {
+  ApiBearerAuth,
+  ApiTags,
+} from '@nestjs/swagger';
+
+import { Role } from '@prisma/client';
+
 import { BookingsService } from './bookings.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { CancelBookingDto } from './dto/cancel-booking.dto';
+
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { Role } from '@prisma/client';
-import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('Bookings')
 @ApiBearerAuth()
-
-@UseGuards(JwtAuthGuard)
 @Controller('bookings')
 export class BookingsController {
-  constructor(private readonly bookingsService: BookingsService) {}
+  constructor(
+    private readonly bookingsService: BookingsService,
+  ) {}
+
+  // ===========================
+  // USER
+  // Create Booking
+  // ===========================
 
   @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.USER)
   create(
     @CurrentUser('sub') userId: string,
     @Body() dto: CreateBookingDto,
@@ -31,7 +47,14 @@ export class BookingsController {
     return this.bookingsService.create(userId, dto);
   }
 
+  // ===========================
+  // USER & VENDOR
+  // My Bookings
+  // ===========================
+
   @Get()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.USER, Role.VENDOR)
   findMyBookings(
     @CurrentUser('sub') userId: string,
     @CurrentUser('role') role: Role,
@@ -39,7 +62,14 @@ export class BookingsController {
     return this.bookingsService.findMyBookings(userId, role);
   }
 
+  // ===========================
+  // USER & VENDOR
+  // Booking Details
+  // ===========================
+
   @Get(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.USER, Role.VENDOR)
   findOne(
     @Param('id') id: string,
     @CurrentUser('sub') userId: string,
@@ -48,7 +78,14 @@ export class BookingsController {
     return this.bookingsService.findOne(id, userId, role);
   }
 
+  // ===========================
+  // VENDOR
+  // Accept Booking
+  // ===========================
+
   @Patch(':id/accept')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.VENDOR)
   accept(
     @Param('id') id: string,
     @CurrentUser('sub') userId: string,
@@ -56,16 +93,34 @@ export class BookingsController {
     return this.bookingsService.accept(id, userId);
   }
 
+  // ===========================
+  // VENDOR
+  // Reject Booking
+  // ===========================
+
   @Patch(':id/reject')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.VENDOR)
   reject(
     @Param('id') id: string,
     @CurrentUser('sub') userId: string,
     @Body() dto: CancelBookingDto,
   ) {
-    return this.bookingsService.reject(id, userId, dto.cancellationReason);
+    return this.bookingsService.reject(
+      id,
+      userId,
+      dto.cancellationReason,
+    );
   }
 
+  // ===========================
+  // VENDOR
+  // Confirm Booking
+  // ===========================
+
   @Patch(':id/confirm')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.USER)
   confirm(
     @Param('id') id: string,
     @CurrentUser('sub') userId: string,
@@ -73,12 +128,23 @@ export class BookingsController {
     return this.bookingsService.confirm(id, userId);
   }
 
+  // ===========================
+  // USER
+  // Cancel Booking
+  // ===========================
+
   @Patch(':id/cancel')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.USER)
   cancel(
     @Param('id') id: string,
     @CurrentUser('sub') userId: string,
     @Body() dto: CancelBookingDto,
   ) {
-    return this.bookingsService.cancel(id, userId, dto);
+    return this.bookingsService.cancel(
+      id,
+      userId,
+      dto,
+    );
   }
 }

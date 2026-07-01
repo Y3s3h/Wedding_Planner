@@ -8,6 +8,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { CancelBookingDto } from './dto/cancel-booking.dto';
 import { Role, BookingStatus } from '@prisma/client';
+import { PaymentStatus } from '@prisma/client';
 
 @Injectable()
 export class BookingsService {
@@ -112,16 +113,37 @@ export class BookingsService {
   }
 
   async confirm(id: string, userId: string) {
-    const booking = await this.getVendorBooking(id, userId);
+  const booking = await this.prisma.booking.findUnique({
+    where: { id },
+  });
 
-    if (booking.status !== BookingStatus.ACCEPTED)
-      throw new BadRequestException('Only ACCEPTED bookings can be confirmed');
-
-    return this.prisma.booking.update({
-      where: { id },
-      data: { status: BookingStatus.CONFIRMED },
-    });
+  if (!booking) {
+    throw new NotFoundException('Booking not found');
   }
+
+  if (booking.userId !== userId) {
+    throw new ForbiddenException('Access denied');
+  }
+
+  if (booking.paymentStatus !== PaymentStatus.PAID) {
+    throw new BadRequestException(
+      'Payment must be completed before confirmation',
+    );
+  }
+
+  if (booking.status !== BookingStatus.ACCEPTED) {
+    throw new BadRequestException(
+      'Only ACCEPTED bookings can be confirmed',
+    );
+  }
+
+  return this.prisma.booking.update({
+    where: { id },
+    data: {
+      status: BookingStatus.CONFIRMED,
+    },
+  });
+}
 
   async cancel(id: string, userId: string, dto: CancelBookingDto) {
     const booking = await this.prisma.booking.findUnique({ where: { id } });

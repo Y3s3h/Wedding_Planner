@@ -1,0 +1,29 @@
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsDateString,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+
+export class CreateTimelineDto {
+
+  @ApiProperty({
+    example: 'Book Venue',
+  })
+  @IsString()
+  title: string;
+
+  @ApiProperty({
+    example: '2026-12-20',
+  })
+  @IsDateString()
+  date: string;
+
+  @ApiProperty({
+    required: false,
+    example: 'Pay advance to venue.',
+  })
+  @IsOptional()
+  @IsString()
+  description?: string;
+}

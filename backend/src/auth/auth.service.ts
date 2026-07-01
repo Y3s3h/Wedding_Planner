@@ -4,6 +4,7 @@ import { LoginDto } from './dto/login.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { Role } from '@prisma/client';
 
 
 @Injectable()
@@ -45,6 +46,7 @@ if (existingPhone) {
       email: registerDto.email,
       phone: registerDto.phone,
       password: hashedPassword,
+      role: Role.USER,
     },
   });
 
