@@ -1,10 +1,11 @@
 import {
-  Controller,
- Get,
-  Post,
-  Patch,
-  Param,
   Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
   UseGuards,
 } from '@nestjs/common';
 
@@ -15,26 +16,27 @@ import {
 
 import { Role } from '@prisma/client';
 
-import { BookingsService } from './bookings.service';
-import { CreateBookingDto } from './dto/create-booking.dto';
-import { CancelBookingDto } from './dto/cancel-booking.dto';
-
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 
-@ApiTags('Bookings')
+import { TimelineService } from './timeline.service';
+
+import { CreateTimelineDto } from './dto/create-timeline.dto';
+import { UpdateTimelineDto } from './dto/update-timeline.dto';
+import { UpdateTimelineStatusDto } from './dto/update-timeline-status.dto';
+
+@ApiTags('Timeline')
 @ApiBearerAuth()
-@Controller('bookings')
-export class BookingsController {
+@Controller('timeline')
+export class TimelineController {
   constructor(
-    private readonly bookingsService: BookingsService,
+    private readonly timelineService: TimelineService,
   ) {}
 
   // ===========================
-  // USER
-  // Create Booking
+  // CREATE
   // ===========================
 
   @Post()
@@ -42,109 +44,98 @@ export class BookingsController {
   @Roles(Role.USER)
   create(
     @CurrentUser('sub') userId: string,
-    @Body() dto: CreateBookingDto,
+    @Body() dto: CreateTimelineDto,
   ) {
-    return this.bookingsService.create(userId, dto);
-  }
-
-  // ===========================
-  // USER & VENDOR
-  // My Bookings
-  // ===========================
-
-  @Get()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.USER, Role.VENDOR)
-  findMyBookings(
-    @CurrentUser('sub') userId: string,
-    @CurrentUser('role') role: Role,
-  ) {
-    return this.bookingsService.findMyBookings(userId, role);
-  }
-
-  // ===========================
-  // USER & VENDOR
-  // Booking Details
-  // ===========================
-
-  @Get(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.USER, Role.VENDOR)
-  findOne(
-    @Param('id') id: string,
-    @CurrentUser('sub') userId: string,
-    @CurrentUser('role') role: Role,
-  ) {
-    return this.bookingsService.findOne(id, userId, role);
-  }
-
-  // ===========================
-  // VENDOR
-  // Accept Booking
-  // ===========================
-
-  @Patch(':id/accept')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.VENDOR)
-  accept(
-    @Param('id') id: string,
-    @CurrentUser('sub') userId: string,
-  ) {
-    return this.bookingsService.accept(id, userId);
-  }
-
-  // ===========================
-  // VENDOR
-  // Reject Booking
-  // ===========================
-
-  @Patch(':id/reject')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.VENDOR)
-  reject(
-    @Param('id') id: string,
-    @CurrentUser('sub') userId: string,
-    @Body() dto: CancelBookingDto,
-  ) {
-    return this.bookingsService.reject(
-      id,
+    return this.timelineService.create(
       userId,
-      dto.cancellationReason,
+      dto,
     );
   }
 
   // ===========================
-  // VENDOR
-  // Confirm Booking
+  // GET ALL
   // ===========================
 
-  @Patch(':id/confirm')
+  @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.USER)
-  confirm(
-    @Param('id') id: string,
+  findAll(
     @CurrentUser('sub') userId: string,
   ) {
-    return this.bookingsService.confirm(id, userId);
+    return this.timelineService.findAll(
+      userId,
+    );
   }
 
   // ===========================
-  // USER
-  // Cancel Booking
+  // GET ONE
   // ===========================
 
-  @Patch(':id/cancel')
+  @Get(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.USER)
-  cancel(
+  findOne(
     @Param('id') id: string,
     @CurrentUser('sub') userId: string,
-    @Body() dto: CancelBookingDto,
   ) {
-    return this.bookingsService.cancel(
+    return this.timelineService.findOne(
+      id,
+      userId,
+    );
+  }
+
+  // ===========================
+  // UPDATE
+  // ===========================
+
+  @Patch(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.USER)
+  update(
+    @Param('id') id: string,
+    @CurrentUser('sub') userId: string,
+    @Body() dto: UpdateTimelineDto,
+  ) {
+    return this.timelineService.update(
       id,
       userId,
       dto,
+    );
+  }
+
+  // ===========================
+  // UPDATE STATUS
+  // ===========================
+
+  @Patch(':id/status')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.USER)
+  updateStatus(
+    @Param('id') id: string,
+    @CurrentUser('sub') userId: string,
+    @Body() dto: UpdateTimelineStatusDto,
+  ) {
+    return this.timelineService.updateStatus(
+      id,
+      userId,
+      dto,
+    );
+  }
+
+  // ===========================
+  // DELETE
+  // ===========================
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.USER)
+  remove(
+    @Param('id') id: string,
+    @CurrentUser('sub') userId: string,
+  ) {
+    return this.timelineService.remove(
+      id,
+      userId,
     );
   }
 }

@@ -13,13 +13,13 @@ import { CategoriesModule } from './categories/categories.module';
 import { PackagesModule } from './packages/packages.module';
 
 import { VendorModule } from './vendor/vendor.module';
-<<<<<<< HEAD
 import { PaymentModule } from './payment/payment.module';
-
-
-=======
 import { BookingsModule } from './bookings/bookings.module';
->>>>>>> 07f40107b02a4d9afbf5d8531ca259b1b44ae08c
+import { GuestsModule } from './guests/guests.module';
+import { TimelineModule } from './timeline/timeline.module';
+import { ChecklistModule } from './checklist/checklist.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -34,7 +34,7 @@ import { BookingsModule } from './bookings/bookings.module';
     ChatbotModule,
     CategoriesModule, 
      PackagesModule, PaymentModule,
-     PackagesModule, BookingsModule,
+     PackagesModule, BookingsModule, GuestsModule, TimelineModule, ChecklistModule, NotificationsModule, AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],

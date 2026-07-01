@@ -1,17 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsPositive, IsString } from 'class-validator';
+import { IsUUID } from 'class-validator';
 
 export class CreateOrderDto {
-  @ApiProperty({
-    example: 'booking-id-123',
-  })
-  @IsString()
-  bookingId: string;
 
   @ApiProperty({
-    example: 50000,
+    example: '8d9d2a84-c6c8-4c1f-8ef8-f2c6a7d6e8e1',
   })
-  @IsNumber()
-  @IsPositive()
-  amount: number;
+  @IsUUID()
+  bookingId!: string;
 }

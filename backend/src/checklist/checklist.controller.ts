@@ -1,10 +1,11 @@
 import {
-  Controller,
- Get,
-  Post,
-  Patch,
-  Param,
   Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
   UseGuards,
 } from '@nestjs/common';
 
@@ -15,26 +16,27 @@ import {
 
 import { Role } from '@prisma/client';
 
-import { BookingsService } from './bookings.service';
-import { CreateBookingDto } from './dto/create-booking.dto';
-import { CancelBookingDto } from './dto/cancel-booking.dto';
-
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 
-@ApiTags('Bookings')
+import { ChecklistService } from './checklist.service';
+
+import { CreateChecklistDto } from './dto/create-checklist.dto';
+import { UpdateChecklistDto } from './dto/update-checklist.dto';
+import { UpdateChecklistStatusDto } from './dto/update-checklist-status.dto';
+
+@ApiTags('Checklist')
 @ApiBearerAuth()
-@Controller('bookings')
-export class BookingsController {
+@Controller('checklist')
+export class ChecklistController {
   constructor(
-    private readonly bookingsService: BookingsService,
+    private readonly checklistService: ChecklistService,
   ) {}
 
   // ===========================
-  // USER
-  // Create Booking
+  // CREATE
   // ===========================
 
   @Post()
@@ -42,109 +44,90 @@ export class BookingsController {
   @Roles(Role.USER)
   create(
     @CurrentUser('sub') userId: string,
-    @Body() dto: CreateBookingDto,
+    @Body() dto: CreateChecklistDto,
   ) {
-    return this.bookingsService.create(userId, dto);
+    return this.checklistService.create(userId, dto);
   }
 
   // ===========================
-  // USER & VENDOR
-  // My Bookings
+  // GET ALL
   // ===========================
 
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.USER, Role.VENDOR)
-  findMyBookings(
+  @Roles(Role.USER)
+  findAll(
     @CurrentUser('sub') userId: string,
-    @CurrentUser('role') role: Role,
   ) {
-    return this.bookingsService.findMyBookings(userId, role);
+    return this.checklistService.findAll(userId);
   }
 
   // ===========================
-  // USER & VENDOR
-  // Booking Details
+  // GET ONE
   // ===========================
 
   @Get(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.USER, Role.VENDOR)
+  @Roles(Role.USER)
   findOne(
     @Param('id') id: string,
     @CurrentUser('sub') userId: string,
-    @CurrentUser('role') role: Role,
   ) {
-    return this.bookingsService.findOne(id, userId, role);
+    return this.checklistService.findOne(id, userId);
   }
 
   // ===========================
-  // VENDOR
-  // Accept Booking
+  // UPDATE
   // ===========================
 
-  @Patch(':id/accept')
+  @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.VENDOR)
-  accept(
+  @Roles(Role.USER)
+  update(
     @Param('id') id: string,
     @CurrentUser('sub') userId: string,
+    @Body() dto: UpdateChecklistDto,
   ) {
-    return this.bookingsService.accept(id, userId);
-  }
-
-  // ===========================
-  // VENDOR
-  // Reject Booking
-  // ===========================
-
-  @Patch(':id/reject')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.VENDOR)
-  reject(
-    @Param('id') id: string,
-    @CurrentUser('sub') userId: string,
-    @Body() dto: CancelBookingDto,
-  ) {
-    return this.bookingsService.reject(
+    return this.checklistService.update(
       id,
       userId,
-      dto.cancellationReason,
+      dto,
     );
   }
 
   // ===========================
-  // VENDOR
-  // Confirm Booking
+  // UPDATE STATUS
   // ===========================
 
-  @Patch(':id/confirm')
+  @Patch(':id/status')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.USER)
-  confirm(
+  updateStatus(
     @Param('id') id: string,
     @CurrentUser('sub') userId: string,
+    @Body() dto: UpdateChecklistStatusDto,
   ) {
-    return this.bookingsService.confirm(id, userId);
-  }
-
-  // ===========================
-  // USER
-  // Cancel Booking
-  // ===========================
-
-  @Patch(':id/cancel')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.USER)
-  cancel(
-    @Param('id') id: string,
-    @CurrentUser('sub') userId: string,
-    @Body() dto: CancelBookingDto,
-  ) {
-    return this.bookingsService.cancel(
+    return this.checklistService.updateStatus(
       id,
       userId,
       dto,
+    );
+  }
+
+  // ===========================
+  // DELETE
+  // ===========================
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.USER)
+  remove(
+    @Param('id') id: string,
+    @CurrentUser('sub') userId: string,
+  ) {
+    return this.checklistService.remove(
+      id,
+      userId,
     );
   }
 }

@@ -1,35 +1,199 @@
-import { Injectable } from '@nestjs/common';
-import Razorpay from 'razorpay';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  ForbiddenException,
+} from '@nestjs/common';
+
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { VerifyPaymentDto } from './dto/verify-payment.dto';
+import { PaymentStatus } from '@prisma/client';
+import Razorpay from 'razorpay';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class PaymentService {
+  constructor(
+    private readonly prisma: PrismaService,
+  ) {}
 
-  private razorpay: Razorpay;
-
-  constructor() {
-    this.razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID!,
-      key_secret: process.env.RAZORPAY_KEY_SECRET!,
+  // ===============================
+  // CREATE ORDER
+  // ===============================
+  async createOrder(
+    userId: string,
+    dto: CreateOrderDto,
+  ) {
+    const booking = await this.prisma.booking.findUnique({
+      where: {
+        id: dto.bookingId,
+      },
+      include: {
+        package: true,
+        vendor: true,
+      },
     });
+
+    if (!booking) {
+      throw new NotFoundException('Booking not found');
+    }
+
+    if (booking.userId !== userId) {
+      throw new ForbiddenException(
+        'You are not allowed to access this booking',
+      );
+    }
+
+    if (booking.paymentStatus === PaymentStatus.PAID) {
+      throw new BadRequestException(
+        'Payment already completed',
+      );
+    }
+
+    // Razorpay order yahin create hoga
+    // Abhi dummy response return kar rahe hain
+
+    return {
+      success: true,
+      message: 'Order created successfully',
+      data: {
+        bookingId: booking.id,
+        amount: booking.totalAmount,
+        paymentStatus: booking.paymentStatus,
+        currency: 'INR',
+      },
+    };
   }
 
-  async createOrder(
-  createOrderDto: CreateOrderDto,
-) {
+  // ===============================
+  // VERIFY PAYMENT
+  // ===============================
+  async verifyPayment(
+    userId: string,
+    bookingId: string,
+    dto: VerifyPaymentDto,
+  ) {
+    const booking = await this.prisma.booking.findUnique({
+      where: {
+        id: bookingId,
+      },
+    });
 
-  const options = {
-    amount: createOrderDto.amount * 100,
-    currency: 'INR',
-    receipt: createOrderDto.bookingId,
-  };
+    if (!booking) {
+      throw new NotFoundException(
+        'Booking not found',
+      );
+    }
 
-  const order = await this.razorpay.orders.create(options);
+    if (booking.userId !== userId) {
+      throw new ForbiddenException(
+        'Access denied',
+      );
+    }
 
-  return {
-    success: true,
-    message: 'Order created successfully',
-    data: order,
-  };
-}
+    if (booking.paymentStatus === PaymentStatus.PAID) {
+      throw new BadRequestException(
+        'Payment already verified',
+      );
+    }
+
+    const body = dto.orderId + "|" + dto.paymentId;
+
+const expectedSignature = crypto
+  .createHmac(
+    "sha256",
+    process.env.RAZORPAY_KEY_SECRET!,
+  )
+  .update(body)
+  .digest("hex");
+
+// if (expectedSignature !== dto.signature) {
+//   throw new BadRequestException(
+//     "Invalid payment signature",
+//   );
+// }
+
+    // Razorpay Signature Verification
+    // Baad me yahin hoga
+
+    const updatedBooking =
+      await this.prisma.booking.update({
+        where: {
+          id: booking.id,
+        },
+        data: {
+          paymentStatus: PaymentStatus.PAID,
+        },
+      });
+
+    return {
+      success: true,
+      message: 'Payment verified successfully',
+      data: updatedBooking,
+    };
+  }
+
+  // ===============================
+  // PAYMENT HISTORY
+  // ===============================
+  async paymentHistory(userId: string) {
+    const payments =
+      await this.prisma.booking.findMany({
+        where: {
+          userId,
+          paymentStatus: PaymentStatus.PAID,
+        },
+        include: {
+          package: true,
+          vendor: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
+    return {
+      success: true,
+      count: payments.length,
+      data: payments,
+    };
+  }
+
+  // ===============================
+  // SINGLE PAYMENT
+  // ===============================
+  async getPayment(
+    userId: string,
+    bookingId: string,
+  ) {
+    const booking =
+      await this.prisma.booking.findUnique({
+        where: {
+          id: bookingId,
+        },
+        include: {
+          package: true,
+          vendor: true,
+          user: true,
+        },
+      });
+
+    if (!booking) {
+      throw new NotFoundException(
+        'Booking not found',
+      );
+    }
+
+    if (booking.userId !== userId) {
+      throw new ForbiddenException(
+        'Access denied',
+      );
+    }
+
+    return {
+      success: true,
+      data: booking,
+    };
+  }
 }

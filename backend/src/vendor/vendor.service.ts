@@ -36,31 +36,36 @@ export class VendorService {
     );
   }
 
-  // Create Vendor Profile
-  const vendor = await this.prisma.vendor.create({
-    data: {
-      businessName: createVendorDto.businessName,
-      description: createVendorDto.description,
-      address: createVendorDto.address,
-      categoryId: createVendorDto.categoryId,
-      userId,
-    },
-  });
+  const result = await this.prisma.$transaction(async (tx) => {
 
-  // Update User Role to VENDOR
-  await this.prisma.user.update({
-    where: {
-      id: userId,
-    },
-    data: {
-      role: Role.VENDOR,
-    },
+    // Update User Role
+    await tx.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        role: Role.VENDOR,
+      },
+    });
+
+    // Create Vendor Profile
+    const vendor = await tx.vendor.create({
+      data: {
+        businessName: createVendorDto.businessName,
+        description: createVendorDto.description,
+        address: createVendorDto.address,
+        categoryId: createVendorDto.categoryId,
+        userId,
+      },
+    });
+
+    return vendor;
   });
 
   return {
     success: true,
     message: 'Vendor profile created successfully',
-    data: vendor,
+    data: result,
   };
 }
 

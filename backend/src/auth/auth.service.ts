@@ -46,7 +46,7 @@ if (existingPhone) {
       email: registerDto.email,
       phone: registerDto.phone,
       password: hashedPassword,
-      role: registerDto.role ?? Role.USER,
+      role: Role.USER,
     },
   });
 
