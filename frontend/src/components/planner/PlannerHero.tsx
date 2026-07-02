@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 import {
   CalendarDays,
@@ -8,7 +9,60 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
+import { useAuthStore } from "@/store/authStore";
+import { useBookingStore } from "@/store/bookingStore";
+
 export default function PlannerHero() {
+
+  const { user } = useAuthStore();
+
+const bookings = useBookingStore(
+  (state) => state.bookings
+);
+
+const firstName =
+  user?.name?.split(" ")[0] || "Customer";
+
+const nextBooking = useMemo(() => {
+  const today = new Date();
+
+  return bookings
+    .filter(
+      (booking) =>
+        booking.bookingStatus !== "cancelled" &&
+        new Date(booking.eventDate) >= today
+    )
+    .sort(
+      (a, b) =>
+        new Date(a.eventDate).getTime() -
+        new Date(b.eventDate).getTime()
+    )[0];
+}, [bookings]);
+
+const daysRemaining = useMemo(() => {
+  if (!nextBooking) return 0;
+
+  const today = new Date();
+  const wedding = new Date(nextBooking.eventDate);
+
+  return Math.ceil(
+    (wedding.getTime() - today.getTime()) /
+      (1000 * 60 * 60 * 24)
+  );
+}, [nextBooking]);
+
+const completedBookings = bookings.filter(
+  (booking) =>
+    booking.bookingStatus === "accepted" ||
+    booking.bookingStatus === "completed"
+).length;
+
+const progress =
+  bookings.length === 0
+    ? 0
+    : Math.round(
+        (completedBookings / bookings.length) * 100
+      );
   return (
     <motion.section
       initial={{ opacity: 0, y: 20 }}
@@ -51,11 +105,11 @@ export default function PlannerHero() {
 
           <h1 className="mt-6 text-5xl font-bold leading-tight">
 
-            Plan every
+           {firstName},
 
-            <br />
+<br />
 
-            wedding moment.
+plan your dream wedding.
 
           </h1>
 
@@ -93,7 +147,15 @@ export default function PlannerHero() {
               </span>
 
               <span className="font-semibold">
-                12 Feb 2027
+               {nextBooking
+  ? new Date(
+      nextBooking.eventDate
+    ).toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    })
+  : "--"}
               </span>
 
             </div>
@@ -106,20 +168,22 @@ export default function PlannerHero() {
               </span>
 
               <span className="font-semibold">
-                182 Days
+                {nextBooking
+  ? `${daysRemaining} Days`
+  : "--"}
               </span>
 
             </div>
 
             <div className="flex items-center justify-between">
 
-              <span className="flex items-center gap-2 text-rose-100">
+              {/* <span className="flex items-center gap-2 text-rose-100">
                 <CheckCircle2 size={18} />
                 Tasks Completed
-              </span>
+              </span> */}
 
               <span className="font-semibold">
-                8 / 24
+               {/* `${completedBookings} / ${bookings.length}` */}
               </span>
 
             </div>
@@ -132,13 +196,16 @@ export default function PlannerHero() {
 
               <span>Planning Progress</span>
 
-              <span>33%</span>
+              <span>{progress}%</span>
 
             </div>
 
             <div className="h-3 rounded-full bg-white/20">
 
-              <div className="h-3 w-1/3 rounded-full bg-white" />
+              <div className="h-3 rounded-full bg-white"
+style={{
+  width: `${progress}%`,
+}} />
 
             </div>
 

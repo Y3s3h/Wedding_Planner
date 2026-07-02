@@ -13,20 +13,82 @@ export default function PlannerPage() {
 
       <PlannerHero />
 
-      <ProgressOverview />
+      <ProgressOverview
+  totalTasks={24}
+  completedTasks={8}
+  pendingTasks={16}
+/>
 
       <section className="grid gap-6 xl:grid-cols-2">
-        <Checklist />
+        <Checklist
+  tasks={[
+    {
+      id: "1",
+      title: "Book Wedding Venue",
+      completed: true,
+    },
+    {
+      id: "2",
+      title: "Hire Photographer",
+      completed: true,
+    },
+    {
+      id: "3",
+      title: "Book Decorator",
+      completed: false,
+    },
+    {
+      id: "4",
+      title: "Finalize Catering",
+      completed: false,
+    },
+    {
+      id: "5",
+      title: "Book Makeup Artist",
+      completed: false,
+    },
+    {
+      id: "6",
+      title: "Send Wedding Invitations",
+      completed: false,
+    },
+  ]}
+/>
         <Timeline />
       </section>
 
       <section className="grid gap-6 lg:grid-cols-3">
         <BudgetCard />
-        <GuestCard />
+
+
+        <GuestCard
+  totalGuests={324}
+  confirmedGuests={210}
+  pendingGuests={74}
+  declinedGuests={40}
+/>
         <VendorStatus />
       </section>
 
-      <UpcomingTasks />
+      <UpcomingTasks
+  tasks={[
+    {
+      id: "1",
+      title: "Book Decorator",
+      dueDate: "2026-08-20",
+    },
+    {
+      id: "2",
+      title: "Finalize Catering",
+      dueDate: "2026-08-25",
+    },
+    {
+      id: "3",
+      title: "Book Makeup Artist",
+      dueDate: "2026-09-01",
+    },
+  ]}
+/>
 
     </div>
   );

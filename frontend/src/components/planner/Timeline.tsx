@@ -1,40 +1,73 @@
 "use client";
 
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 import {
   CalendarDays,
   CheckCircle2,
 } from "lucide-react";
 
-const timeline = [
-  {
-    title: "Venue Booked",
-    date: "12 Jan 2026",
-    completed: true,
-  },
-  {
-    title: "Photographer Finalized",
-    date: "25 Jan 2026",
-    completed: true,
-  },
-  {
-    title: "Invitation Design",
-    date: "05 Feb 2026",
-    completed: false,
-  },
-  {
-    title: "Bridal Shopping",
-    date: "20 Feb 2026",
-    completed: false,
-  },
-  {
-    title: "Wedding Ceremony",
-    date: "12 Feb 2027",
-    completed: false,
-  },
-];
+import { useBookingStore } from "@/store/bookingStore";
+type TimelineItem = {
+  id: string;
+  title: string;
+  date: string;
+  completed: boolean;
+};
 
 export default function Timeline() {
+  const bookings = useBookingStore(
+    (state) => state.bookings
+  );
+
+  const timeline = useMemo(() => {
+  const items: TimelineItem[] = [];
+
+  bookings.forEach((booking) => {
+    items.push({
+      id: `${booking.id}-created`,
+      title: `${booking.vendorName} Booked`,
+      date: booking.createdAt,
+      completed: true,
+    });
+
+    if (
+      booking.bookingStatus === "accepted" ||
+      booking.bookingStatus === "completed"
+    ) {
+      items.push({
+        id: `${booking.id}-accepted`,
+        title: `${booking.vendorName} Accepted`,
+        date: booking.updatedAt,
+        completed: true,
+      });
+    }
+
+    if (booking.advancePaid > 0) {
+      items.push({
+        id: `${booking.id}-payment`,
+        title: "Advance Payment",
+        date: booking.updatedAt,
+        completed: true,
+      });
+    }
+
+    items.push({
+      id: `${booking.id}-event`,
+      title: booking.vendorName,
+      date: booking.eventDate,
+      completed:
+        new Date(booking.eventDate) <= new Date(),
+    });
+  });
+
+  return items.sort(
+    (a, b) =>
+      new Date(a.date).getTime() -
+      new Date(b.date).getTime()
+  );
+}, [bookings]);
+
   return (
     <motion.section
       initial={{ opacity: 0, y: 20 }}
@@ -49,7 +82,6 @@ export default function Timeline() {
       "
     >
       <div className="mb-8">
-
         <h2 className="text-2xl font-bold text-gray-900">
           Planning Timeline
         </h2>
@@ -57,115 +89,83 @@ export default function Timeline() {
         <p className="mt-1 text-gray-500">
           Important milestones before your big day.
         </p>
-
       </div>
 
-      <div className="relative">
-
-        {timeline.map((item, index) => (
-
-          <div
-            key={item.title}
-            className="relative flex gap-5 pb-8 last:pb-0"
-          >
-
-            {/* Line */}
-
-            {index !== timeline.length - 1 && (
-              <div
-                className={`
-                  absolute
-                  left-[17px]
-                  top-10
-                  h-full
-                  w-[2px]
-
-                  ${
+      {timeline.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-gray-200 py-10 text-center text-gray-500">
+          No planning timeline available.
+        </div>
+      ) : (
+        <div className="relative">
+          {timeline.map((item, index) => (
+            <div
+              key={item.id}
+              className="relative flex gap-5 pb-8 last:pb-0"
+            >
+              {index !== timeline.length - 1 && (
+                <div
+                  className={`absolute left-[17px] top-10 h-full w-[2px] ${
                     item.completed
                       ? "bg-green-400"
                       : "bg-gray-200"
-                  }
-                `}
-              />
-            )}
+                  }`}
+                />
+              )}
 
-            {/* Icon */}
-
-            <div
-              className={`
-                relative
-                z-10
-                flex
-                h-9
-                w-9
-                items-center
-                justify-center
-                rounded-full
-
-                ${
+              <div
+                className={`relative z-10 flex h-9 w-9 items-center justify-center rounded-full ${
                   item.completed
                     ? "bg-green-100"
                     : "bg-rose-100"
-                }
-              `}
-            >
-              {item.completed ? (
-                <CheckCircle2
-                  size={20}
-                  className="text-green-600"
-                />
-              ) : (
-                <CalendarDays
-                  size={18}
-                  className="text-rose-500"
-                />
-              )}
-            </div>
+                }`}
+              >
+                {item.completed ? (
+                  <CheckCircle2
+                    size={20}
+                    className="text-green-600"
+                  />
+                ) : (
+                  <CalendarDays
+                    size={18}
+                    className="text-rose-500"
+                  />
+                )}
+              </div>
 
-            {/* Content */}
+              <div className="flex-1 rounded-2xl border border-gray-100 p-4 transition hover:border-rose-200 hover:bg-rose-50/30">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-gray-900">
+                    {item.title}
+                  </h3>
 
-            <div className="flex-1 rounded-2xl border border-gray-100 p-4 transition hover:border-rose-200 hover:bg-rose-50/30">
-
-              <div className="flex items-center justify-between">
-
-                <h3 className="font-semibold text-gray-900">
-                  {item.title}
-                </h3>
-
-                <span
-                  className={`
-                    rounded-full
-                    px-3
-                    py-1
-                    text-xs
-                    font-semibold
-
-                    ${
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-semibold ${
                       item.completed
                         ? "bg-green-100 text-green-700"
                         : "bg-rose-100 text-rose-600"
+                    }`}
+                  >
+                    {item.completed
+                      ? "Completed"
+                      : "Upcoming"}
+                  </span>
+                </div>
+
+                <p className="mt-2 text-sm text-gray-500">
+                  {new Date(item.date).toLocaleDateString(
+                    "en-GB",
+                    {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
                     }
-                  `}
-                >
-                  {item.completed
-                    ? "Completed"
-                    : "Upcoming"}
-                </span>
-
+                  )}
+                </p>
               </div>
-
-              <p className="mt-2 text-sm text-gray-500">
-                {item.date}
-              </p>
-
             </div>
-
-          </div>
-
-        ))}
-
-      </div>
-
+          ))}
+        </div>
+      )}
     </motion.section>
   );
 }
