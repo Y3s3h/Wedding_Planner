@@ -10,7 +10,9 @@ import { UpdateVendorDto } from './dto/update-vendor.dto';
 import { SearchVendorDto } from './dto/search-vendor.dto';
 
 import { Role } from '@prisma/client';
+import { VendorStatus } from '@prisma/client';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class VendorService {
@@ -18,12 +20,14 @@ export class VendorService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly cloudinaryService: CloudinaryService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async createVendor(
   userId: string,
   createVendorDto: CreateVendorDto,
 ) {
+  // Check if vendor profile already exists
   const existingVendor = await this.prisma.vendor.findUnique({
     where: {
       userId,
@@ -36,39 +40,25 @@ export class VendorService {
     );
   }
 
-  const result = await this.prisma.$transaction(async (tx) => {
-
-    // Update User Role
-    await tx.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        role: Role.VENDOR,
-      },
-    });
-
-    // Create Vendor Profile
-    const vendor = await tx.vendor.create({
-      data: {
-        businessName: createVendorDto.businessName,
-        description: createVendorDto.description,
-        address: createVendorDto.address,
-        categoryId: createVendorDto.categoryId,
-        userId,
-      },
-    });
-
-    return vendor;
+  // Create Vendor Profile
+  const vendor = await this.prisma.vendor.create({
+    data: {
+      businessName: createVendorDto.businessName,
+      description: createVendorDto.description,
+      address: createVendorDto.address,
+      categoryId: createVendorDto.categoryId,
+      userId,
+      status: VendorStatus.PENDING,
+    },
   });
 
   return {
     success: true,
-    message: 'Vendor profile created successfully',
-    data: result,
+    message:
+      'Vendor registration submitted successfully. Waiting for admin approval.',
+    data: vendor,
   };
 }
-
 async getMyVendorProfile(userId: string) {
   const vendor = await this.prisma.vendor.findUnique({
     where: {
@@ -92,7 +82,6 @@ async getMyVendorProfile(userId: string) {
       'Vendor profile not found',
     );
   }
-
   return {
     success: true,
     data: vendor,
@@ -115,7 +104,11 @@ async updateVendorProfile(
       'Vendor profile not found',
     );
   }
-
+  if (vendor.status !== VendorStatus.APPROVED) {
+  throw new BadRequestException(
+    'Your vendor account is waiting for admin approval.',
+  );
+}
   const updatedVendor = await this.prisma.vendor.update({
     where: {
       userId,
@@ -248,7 +241,11 @@ async getDashboard(userId: string) {
       'Vendor profile not found',
     );
   }
-
+  if (vendor.status !== VendorStatus.APPROVED) {
+  throw new BadRequestException(
+    'Your vendor account is waiting for admin approval.',
+  );
+}
   const totalPackages = await this.prisma.package.count({
     where: {
       vendorId: vendor.id,
@@ -320,7 +317,11 @@ async uploadVendorLogo(
       'Vendor profile not found',
     );
   }
-
+  if (vendor.status !== VendorStatus.APPROVED) {
+  throw new BadRequestException(
+    'Your vendor account is waiting for admin approval.',
+  );
+}
   const uploadedImage: any =
     await this.cloudinaryService.uploadImage(file);
 
@@ -357,7 +358,11 @@ async uploadVendorCover(
       'Vendor profile not found',
     );
   }
-
+  if (vendor.status !== VendorStatus.APPROVED) {
+  throw new BadRequestException(
+    'Your vendor account is waiting for admin approval.',
+  );
+}
   const uploaded: any =
     await this.cloudinaryService.uploadImage(file);
 
@@ -395,7 +400,11 @@ async uploadGallery(
       'Vendor profile not found',
     );
   }
-
+  if (vendor.status !== VendorStatus.APPROVED) {
+  throw new BadRequestException(
+    'Your vendor account is waiting for admin approval.',
+  );
+}
   if (!files || files.length === 0) {
     throw new BadRequestException(
       'Please upload at least one image',
@@ -441,7 +450,11 @@ async getGallery(userId: string) {
       'Vendor profile not found',
     );
   }
-
+  if (vendor.status !== VendorStatus.APPROVED) {
+  throw new BadRequestException(
+    'Your vendor account is waiting for admin approval.',
+  );
+}
   const gallery = await this.prisma.vendorGallery.findMany({
     where: {
       vendorId: vendor.id,
@@ -474,7 +487,11 @@ async deleteGalleryImage(
       'Vendor profile not found',
     );
   }
-
+  if (vendor.status !== VendorStatus.APPROVED) {
+  throw new BadRequestException(
+    'Your vendor account is waiting for admin approval.',
+  );
+}
   const image = await this.prisma.vendorGallery.findUnique({
     where: {
       id: imageId,

@@ -13,6 +13,12 @@ enum Role {
   ADMIN
 }
 
+enum VendorStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model User {
   id         String   @id @default(uuid())
   name       String
@@ -33,16 +39,19 @@ model User {
   notifications Notification[]
   guests        Guest[]
   chatMessages  ChatMessage[]
-  leads Lead[]
+  leads         Lead[]
 }
 
 model Vendor {
-  id           String  @id @default(uuid())
-  businessName String
-  description  String?
-  address      String?
-  logoUrl      String?
-  coverImage   String?
+  id              String       @id @default(uuid())
+  businessName    String
+  description     String?
+  address         String?
+  logoUrl         String?
+  coverImage      String?
+  status          VendorStatus @default(PENDING)
+  rejectionReason String?
+  approvedAt      DateTime?
 
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -56,6 +65,11 @@ model Vendor {
   gallery   VendorGallery[]
 
   bookings Booking[]
+  reviews  Review[]
+  leads    Lead[]
+
+  @@index([categoryId])
+  @@index([status])
 }
 
 model VendorGallery {
@@ -66,11 +80,9 @@ model VendorGallery {
   vendor   Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  bookings  Booking[] 
-  reviews   Review[]
-  leads Lead[]
+  updatedAt DateTime @updatedAt
+
+  @@index([vendorId])
 }
 
 model Category {
@@ -92,16 +104,19 @@ model Package {
   inclusions  String[]
 
   vendorId String
-  vendor   Vendor @relation(fields: [vendorId], references: [id])
+  vendor   Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
 
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id])
 
   bookings  Booking[]
   reviews   Review[]
+  leads     Lead[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  leads Lead[]
+
+  @@index([vendorId])
+  @@index([categoryId])
 }
 
 enum BookingStatus {
@@ -123,13 +138,13 @@ model Booking {
   id String @id @default(uuid())
 
   userId String
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   vendorId String
-  vendor   Vendor @relation(fields: [vendorId], references: [id])
+  vendor   Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
 
   packageId String
-  package   Package @relation(fields: [packageId], references: [id])
+  package   Package @relation(fields: [packageId], references: [id], onDelete: Restrict)
 
   eventDate          DateTime
   status             BookingStatus @default(PENDING)
@@ -141,29 +156,38 @@ model Booking {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  review Review? 
+  review    Review?
+
+  @@index([userId])
+  @@index([vendorId])
+  @@index([packageId])
+  @@index([status])
 }
 
 model Review {
-  id      String  @id @default(uuid())
-  rating  Int     @default(5)
-  comment String?
+  id          String   @id @default(uuid())
+  rating      Int      @default(5)
+  comment     String?
   vendorReply String?
   updatedAt   DateTime @updatedAt
 
   userId String
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   packageId String
-  package   Package @relation(fields: [packageId], references: [id])
+  package   Package @relation(fields: [packageId], references: [id], onDelete: Restrict)
 
   vendorId String
-  vendor   Vendor @relation(fields: [vendorId], references: [id])
+  vendor   Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
 
-  bookingId String? @unique   // optional: enforce "only after completed booking"
-  booking   Booking? @relation(fields: [bookingId], references: [id])
+  bookingId String  @unique
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
+
+  @@index([vendorId])
+  @@index([userId])
+  @@index([packageId])
 }
 
 enum GuestStatus {
@@ -180,18 +204,20 @@ model Guest {
   status GuestStatus @default(INVITED)
 
   userId String
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model Budget {
-  id          String   @id @default(uuid())
-  totalBudget Decimal  @db.Decimal(10, 2)
+  id          String  @id @default(uuid())
+  totalBudget Decimal @db.Decimal(10, 2)
 
-   userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   expenses  Expense[]
   createdAt DateTime  @default(now())
@@ -199,18 +225,20 @@ model Budget {
 }
 
 model Expense {
-  id       String  @id @default(uuid())
+  id       String   @id @default(uuid())
   title    String
   category String
-  amount   Decimal @db.Decimal(10, 2)
+  amount   Decimal  @db.Decimal(10, 2)
   note     String?
   date     DateTime @default(now())
 
   budgetId String
-  budget   Budget  @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+  budget   Budget @relation(fields: [budgetId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([budgetId])
 }
 
 enum TimelineStatus {
@@ -222,7 +250,7 @@ model Timeline {
   id String @id @default(uuid())
 
   userId String
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   title       String
   date        DateTime
@@ -230,6 +258,8 @@ model Timeline {
   status      TimelineStatus @default(PENDING)
 
   createdAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 model Checklist {
@@ -238,9 +268,11 @@ model Checklist {
   isDone Boolean @default(false)
 
   userId String
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 model Notification {
@@ -250,9 +282,11 @@ model Notification {
   isRead  Boolean @default(false)
 
   userId String
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
+
+  @@index([userId, isRead])
 }
 
 enum ChatRole {
@@ -263,11 +297,14 @@ enum ChatRole {
 model ChatMessage {
   id        String   @id @default(uuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   role      ChatRole
   content   String
   createdAt DateTime @default(now())
+
+  @@index([userId])
 }
+
 enum LeadStatus {
   PENDING
   RESPONDED
@@ -276,28 +313,33 @@ enum LeadStatus {
 }
 
 model Lead {
-  id         String    @id @default(uuid())
-  name       String
-  email      String
-  phone      String?
-  eventDate  DateTime
-  guestCount Int
-  message    String
-  status     LeadStatus @default(PENDING)
+  id          String     @id @default(uuid())
+  name        String
+  email       String
+  phone       String?
+  eventDate   DateTime
+  guestCount  Int
+  message     String
+  status      LeadStatus @default(PENDING)
   vendorReply String?
 
   userId String
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   vendorId String
-  vendor   Vendor @relation(fields: [vendorId], references: [id])
+  vendor   Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
 
   packageId String?
-  package   Package? @relation(fields: [packageId], references: [id])
+  package   Package? @relation(fields: [packageId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([vendorId])
+  @@index([userId])
+  @@index([status])
 }
+
 model SiteContent {
   id        String   @id @default(uuid())
   slug      String   @unique
