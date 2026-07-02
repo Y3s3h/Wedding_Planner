@@ -1,72 +1,36 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
+
 import { motion } from "framer-motion";
+
 import {
   CalendarDays,
   CheckCircle2,
 } from "lucide-react";
 
-import { useBookingStore } from "@/store/bookingStore";
-type TimelineItem = {
-  id: string;
-  title: string;
-  date: string;
-  completed: boolean;
-};
+import { usePlannerStore } from "@/store/plannerStore";
 
 export default function Timeline() {
-  const bookings = useBookingStore(
-    (state) => state.bookings
+  const tasks = usePlannerStore(
+    (state) => state.tasks
   );
+
+  const loadTasks = usePlannerStore(
+    (state) => state.loadTasks
+  );
+
+  useEffect(() => {
+    loadTasks();
+  }, [loadTasks]);
 
   const timeline = useMemo(() => {
-  const items: TimelineItem[] = [];
-
-  bookings.forEach((booking) => {
-    items.push({
-      id: `${booking.id}-created`,
-      title: `${booking.vendorName} Booked`,
-      date: booking.createdAt,
-      completed: true,
-    });
-
-    if (
-      booking.bookingStatus === "accepted" ||
-      booking.bookingStatus === "completed"
-    ) {
-      items.push({
-        id: `${booking.id}-accepted`,
-        title: `${booking.vendorName} Accepted`,
-        date: booking.updatedAt,
-        completed: true,
-      });
-    }
-
-    if (booking.advancePaid > 0) {
-      items.push({
-        id: `${booking.id}-payment`,
-        title: "Advance Payment",
-        date: booking.updatedAt,
-        completed: true,
-      });
-    }
-
-    items.push({
-      id: `${booking.id}-event`,
-      title: booking.vendorName,
-      date: booking.eventDate,
-      completed:
-        new Date(booking.eventDate) <= new Date(),
-    });
-  });
-
-  return items.sort(
-    (a, b) =>
-      new Date(a.date).getTime() -
-      new Date(b.date).getTime()
-  );
-}, [bookings]);
+    return [...tasks].sort(
+      (a, b) =>
+        new Date(a.dueDate).getTime() -
+        new Date(b.dueDate).getTime()
+    );
+  }, [tasks]);
 
   return (
     <motion.section
@@ -82,30 +46,37 @@ export default function Timeline() {
       "
     >
       <div className="mb-8">
+
         <h2 className="text-2xl font-bold text-gray-900">
           Planning Timeline
         </h2>
 
         <p className="mt-1 text-gray-500">
-          Important milestones before your big day.
+          Upcoming planner milestones.
         </p>
+
       </div>
 
       {timeline.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-gray-200 py-10 text-center text-gray-500">
-          No planning timeline available.
+        <div className="rounded-2xl border border-dashed border-gray-200 py-12 text-center text-gray-500">
+          No planner tasks available.
         </div>
       ) : (
         <div className="relative">
-          {timeline.map((item, index) => (
+
+          {timeline.map((task, index) => (
+
             <div
-              key={item.id}
+              key={task.id}
               className="relative flex gap-5 pb-8 last:pb-0"
             >
-              {index !== timeline.length - 1 && (
+
+              {index !==
+                timeline.length - 1 && (
                 <div
                   className={`absolute left-[17px] top-10 h-full w-[2px] ${
-                    item.completed
+                    task.status ===
+                    "completed"
                       ? "bg-green-400"
                       : "bg-gray-200"
                   }`}
@@ -114,12 +85,14 @@ export default function Timeline() {
 
               <div
                 className={`relative z-10 flex h-9 w-9 items-center justify-center rounded-full ${
-                  item.completed
+                  task.status ===
+                  "completed"
                     ? "bg-green-100"
                     : "bg-rose-100"
                 }`}
               >
-                {item.completed ? (
+                {task.status ===
+                "completed" ? (
                   <CheckCircle2
                     size={20}
                     className="text-green-600"
@@ -133,26 +106,41 @@ export default function Timeline() {
               </div>
 
               <div className="flex-1 rounded-2xl border border-gray-100 p-4 transition hover:border-rose-200 hover:bg-rose-50/30">
+
                 <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-gray-900">
-                    {item.title}
-                  </h3>
+
+                  <div>
+
+                    <h3 className="font-semibold text-gray-900">
+                      {task.title}
+                    </h3>
+
+                    {task.description && (
+                      <p className="mt-1 text-sm text-gray-500">
+                        {task.description}
+                      </p>
+                    )}
+
+                  </div>
 
                   <span
-                    className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                      item.completed
+                    className={`rounded-full px-3 py-1 text-xs font-semibold capitalize ${
+                      task.status ===
+                      "completed"
                         ? "bg-green-100 text-green-700"
                         : "bg-rose-100 text-rose-600"
                     }`}
                   >
-                    {item.completed
-                      ? "Completed"
-                      : "Upcoming"}
+                    {task.status}
                   </span>
+
                 </div>
 
-                <p className="mt-2 text-sm text-gray-500">
-                  {new Date(item.date).toLocaleDateString(
+                <p className="mt-3 text-sm text-gray-500">
+
+                  {new Date(
+                    task.dueDate
+                  ).toLocaleDateString(
                     "en-GB",
                     {
                       day: "2-digit",
@@ -160,10 +148,15 @@ export default function Timeline() {
                       year: "numeric",
                     }
                   )}
+
                 </p>
+
               </div>
+
             </div>
+
           ))}
+
         </div>
       )}
     </motion.section>
