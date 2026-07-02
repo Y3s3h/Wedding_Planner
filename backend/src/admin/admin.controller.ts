@@ -65,12 +65,26 @@ getVendorById(
   return this.adminService.getVendorById(id);
 }
 
+@Patch('vendors/:id/approve')
+approveVendor(
+  @Param('id') id: string,
+) {
+  return this.adminService.approveVendor(id);
+}
+
+@Patch('vendors/:id/reject')
+rejectVendor(
+  @Param('id') id: string,
+) {
+  return this.adminService.rejectVendor(id);
+}
 @Delete('vendors/:id')
 deleteVendor(
   @Param('id') id: string,
 ) {
   return this.adminService.deleteVendor(id);
 }
+
 
 @Get('bookings')
 getAllBookings() {

@@ -1,6 +1,6 @@
 import { Injectable,NotFoundException, } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { BookingStatus } from '@prisma/client';
+import { BookingStatus,Role,VendorStatus } from '@prisma/client';
 
 @Injectable()
 export class AdminService {
@@ -165,6 +165,76 @@ async getVendorById(id: string) {
   };
 }
 
+async approveVendor(id: string) {
+
+  const vendor = await this.prisma.vendor.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!vendor) {
+    throw new NotFoundException(
+      'Vendor not found',
+    );
+  }
+
+  await this.prisma.$transaction(async (tx) => {
+
+    await tx.vendor.update({
+      where: {
+        id,
+      },
+      data: {
+        status: VendorStatus.APPROVED,
+      },
+    });
+
+    await tx.user.update({
+      where: {
+        id: vendor.userId,
+      },
+      data: {
+        role: Role.VENDOR,
+      },
+    });
+
+  });
+
+  return {
+    success: true,
+    message: 'Vendor approved successfully',
+  };
+}
+
+async rejectVendor(id: string) {
+
+  const vendor = await this.prisma.vendor.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!vendor) {
+    throw new NotFoundException(
+      'Vendor not found',
+    );
+  }
+
+  await this.prisma.vendor.update({
+    where: {
+      id,
+    },
+    data: {
+      status: VendorStatus.REJECTED,
+    },
+  });
+
+  return {
+    success: true,
+    message: 'Vendor rejected successfully',
+  };
+}
 async deleteVendor(id: string) {
   const vendor = await this.prisma.vendor.findUnique({
     where: { id },
